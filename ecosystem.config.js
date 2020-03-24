@@ -19,9 +19,9 @@ module.exports = {
       host: ["47.104.88.94"],
       // 默认22
       // port: "",
-      ref: "origin/pm2",
-      repo: "git@gitlab.corp.youdao.com:yewq/fb_advertising_delivery.git",
-      path: "/www/fb_admin/production", // 发布的目录 
+      ref: "origin/master",
+      repo: "git@gitlab.com:weikeduoppp/fb_ad_admin.git",
+      path: "/www/fb_admin/production", // 发布的目录
       ssh_options: ["StrictHostKeyChecking=no", "PasswordAuthentication=no"],
       // 发布脚本  (部署到服务后, 服务器会执行的script)
       "post-deploy":
