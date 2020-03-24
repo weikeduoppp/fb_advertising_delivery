@@ -1,0 +1,154 @@
+:global .ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+
+:global .ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+
+.upload_btn {
+  margin-left: 20px;
+}
+
+.image_content {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.item_container {
+  width: 120px;
+  height: 154px;
+  display: flex;
+  justify-content: center;
+}
+.item_content {
+  width: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+.item_img_con {
+  position: relative;
+  overflow: hidden;
+  width: 96px;
+  height: 96px;
+  border-radius: 8px;
+  text-align: center;
+  background: #f2f2f2;
+}
+.item_img_con.active {
+  border: 2px solid #3578e5;
+}
+.item_img_con img {
+  width: auto;
+  height: 96px;
+}
+.item_name {
+  width: 96px;
+  margin-top: 4px;
+  color: rgb(28, 30, 33);
+  font-size: 13px;
+  text-align: center;
+}
+.item_wh {
+  width: 96px;
+  font-size: 12px;
+  color: rgb(28, 30, 33);
+  text-align: center;
+}
+.item_img {
+  width: 96px;
+  height: 96px;
+  background-size:contain;
+  background-position: center;
+  background-repeat:no-repeat;
+}
+
+.item_img_number {
+  position: absolute;
+  display: inline-block;
+  right: 5px;
+  bottom: 5px;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 50%;
+  background: #1890ff;
+  color: #fff;
+}
+
+:global .ant-modal-body {
+  padding: 20px;
+}
+
+.select_container {
+  margin-top: 30px;
+}
+
+.childAttachments_con {
+  background: #f5f7f8;
+  border: 1px solid;
+  border-color: #EBEDF0 #DEE3E8 #c6c9cc;
+  padding: 0 30px 30px 30px;
+}
+
+:global .ant-tabs-card-bar,
+:global .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-nav-wrap {
+  height: 0;
+}
+
+.model_top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.paging_container {
+  margin-right: 32px;
+}
+
+.DynamicDetail_icon_container {
+  margin-top: 10px;
+  color: #1890ff;
+  .DynamicDetail_icon_con {
+    display: inline-block;
+    cursor: pointer;
+  }
+  .DynamicDetail_icon {
+    vertical-align: -0.2rem;
+    margin-right: 8px;
+    font-size: 18px;
+    color: #1890ff;
+  }
+}
+
+.DynamicDetail_input {
+  margin-top: 10px;
+}
+.DynamicDetail_close_con {
+  padding-top: 15px;
+}
+// 扩展点击区域
+.extend-click() {
+  position: relative;
+  &:before {
+    position: absolute;
+    content: '';
+    top: -10px;
+    left: -10px;
+    bottom: -10px;
+    right: -10px;
+  }
+}
+.DynamicDetail_close {
+  cursor: pointer;
+  .extend-click();
+}
+
+.DynamicDetail_title {
+  margin-bottom: 0;
+}

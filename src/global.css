@@ -1,0 +1,25 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  --color: #1890ff;
+  --ceater-color: rgb(0, 164, 0);
+  --fds-active-icon: #3578e5;
+}
+
+.text_ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:global .ant-table-pagination {
+  display: none;
+}
