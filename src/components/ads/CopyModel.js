@@ -3,7 +3,7 @@ import CopyNum from "../copy/CopyNum";
 import { useState, useEffect } from "react";
 import * as api from "utils/fb_api.js";
 import { Divider, Select } from "antd";
-import { connect } from "dva";
+import { connect } from "umi";
 import Pattern from "../copy/Pattern";
 import style from "../adset/index.less";
 

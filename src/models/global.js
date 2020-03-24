@@ -1,4 +1,4 @@
-import * as globalServices from "../services/global";
+// import * as globalServices from "../services/global";
 
 // 制定reducer模式  eg: access_token => set_access_token
 function makeReducer(state) {
@@ -83,10 +83,10 @@ export default {
     // 而外的
   },
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const data = yield call(globalServices.fetch);
-      yield put({ type: "save", payload: data });
-    }
+    // *fetch({ payload }, { call, put }) {
+    //   const data = yield call(globalServices.fetch);
+    //   yield put({ type: "save", payload: data });
+    // }
   },
   subscriptions: {
     setup({ dispatch, history }) {

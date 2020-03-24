@@ -3,7 +3,7 @@ import CopyNum from "../copy/CopyNum";
 import { useState, useEffect, useReducer } from "react";
 import * as api from "utils/fb_api.js";
 import { Divider, Select, message } from "antd";
-import { connect } from "dva";
+import { connect } from "umi";
 import Pattern from "../copy/Pattern";
 import * as campaignConstant from "pages/campaign/constant";
 import CampaignForm from "pages/campaign/_Form";

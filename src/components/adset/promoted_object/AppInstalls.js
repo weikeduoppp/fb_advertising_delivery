@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Select, Spin } from "antd";
 import { getAdaccountApp } from "utils/fb_api";
-import { connect } from 'dva'
+import { connect } from 'umi'
 import style from "./index.less";
 const { Option } = Select;
 

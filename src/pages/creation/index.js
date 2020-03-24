@@ -5,7 +5,7 @@ import * as adsCreativeContant from "../ads/CreativeContant";
 import * as dynamicCreativeContant from "../ads/dynamicCreativeContant"
 import { Tabs, Button, message, Spin } from "antd";
 import style from "./index.less";
-import { connect } from "dva";
+import { connect } from "umi";
 import CreateBtn from "./createBtn";
 const CreateAdset = lazy(() => import("./createAdset"));
 const CreateCampaign = lazy(() => import("./createCampaign"));

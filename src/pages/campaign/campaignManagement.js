@@ -1,6 +1,6 @@
 import React from 'react';
 import WithPage from "components/common/withPage";
-import { connect } from 'dva'
+import { connect } from 'umi'
 import Campaign from './campaign'
 
 const campaignManagement = ({ adaccount_id }) => {

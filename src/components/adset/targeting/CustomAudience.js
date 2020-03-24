@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getCustomAudience } from "utils/fb_api";
-import { connect } from "dva";
+import { connect } from "umi";
 import { Select } from "antd";
 const { Option } = Select;
 const CustomAudience = React.memo(

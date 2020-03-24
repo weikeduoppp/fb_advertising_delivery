@@ -3,8 +3,8 @@ import style from "./index.less";
 import { Divider } from "antd";
 import Table from "components/common/_Table";
 import Edit from "./edit";
-import { connect } from "dva";
-import router from "umi/router";
+import { connect } from "umi";
+import { history as router } from 'umi';
 import * as CampaignContant from "pages/campaign/constant";
 
 const TableComponent = ({

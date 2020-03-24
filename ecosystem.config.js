@@ -25,7 +25,7 @@ module.exports = {
       ssh_options: ["StrictHostKeyChecking=no", "PasswordAuthentication=no"],
       // 发布脚本  (部署到服务后, 服务器会执行的script)
       "post-deploy":
-        "npm install && npm build && pm2 startOrRestart ecosystem.config.js --env production",
+        "yarn && yarn build && pm2 startOrRestart ecosystem.config.js --env production",
       // Environment variables that must be injected in all applications on this env
       env: {
         NODE_ENV: "production"

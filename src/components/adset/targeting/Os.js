@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Checkbox, Select } from "antd";
 import { getPublisherPlatforms } from "utils/fb_api";
 import style  from '../index.less'
-import { connect } from 'dva'
+import { connect } from 'umi'
 const { Option } = Select;
 const plainOptions = ["iOS", "Android"];
 // 数据格式

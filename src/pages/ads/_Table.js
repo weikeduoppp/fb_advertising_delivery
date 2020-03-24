@@ -3,7 +3,7 @@ import style from "../adset/index.less";
 import { Divider, Spin } from "antd";
 import Table from "components/common/_Table";
 import Edit from "./edit";
-import { connect } from "dva";
+import { connect } from "umi";
 import * as api from "utils/fb_api.js";
 import { filterParams } from "utils";
 import * as CampaignContant from "../campaign/constant";

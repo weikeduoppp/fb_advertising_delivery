@@ -3,7 +3,7 @@ import { Select } from "antd";
 import { getPixelId } from "utils/fb_api";
 import style from "./index.less";
 import { CONVERSIONS_EVENT } from "../../../pages/adset/constant";
-import { connect } from 'dva'
+import { connect } from 'umi'
 const { Option } = Select;
 
 // 根据系列选择的目标 展示不同内容

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { connect } from "dva";
+import { connect } from "umi";
 import { Button, Input, Tabs } from "antd";
 import style from "../adset/index.less";
 import ImageStyle from "./index.less";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAdlocale } from "utils/fb_api";
 import { Select } from "antd";
-import { connect } from "dva";
+import { connect } from "umi";
 const { Option } = Select;
 const Adlocale = React.memo(({ locale, dispatch, handleSubmit, locales }) => {
   const [options, setData] = useState([]);

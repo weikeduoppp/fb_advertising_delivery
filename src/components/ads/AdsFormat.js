@@ -1,6 +1,6 @@
 import React from 'react'
 import style from "../adset/index.less";
-import { connect } from 'dva'
+import { connect } from 'umi'
 import { Radio } from "antd";
 /* 
   非动态素材
