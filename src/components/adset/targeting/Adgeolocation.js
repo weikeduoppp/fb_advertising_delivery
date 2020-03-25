@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getAdgeolocation, getCountryGroup } from "utils/fb_api";
-import { connect } from "umi";
+import { connect } from "dva";
 import { Select } from "antd";
 import style from '../index.less'
 const { Option } = Select;

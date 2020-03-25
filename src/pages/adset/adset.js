@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Table from "./_Table";
 import style from "./index.less";
 import { Icon } from "antd";
-import { connect } from "umi";
+import { connect } from "dva";
 import TableTop from "components/common/TableTop/TableTop";
 import CopyModel from "components/adset/CopyModel";
 

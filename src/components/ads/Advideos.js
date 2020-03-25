@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { connect } from "umi";
+import { connect } from "dva";
 import { getAdvideos } from "utils/fb_api";
 import Model from "../common/_Model";
 import style from "./index.less";

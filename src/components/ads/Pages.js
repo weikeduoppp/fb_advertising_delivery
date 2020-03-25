@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import style from '../adset/index.less'
 import { Select } from "antd";
 import * as api from "utils/fb_api";
-import { connect } from 'umi'
+import { connect } from 'dva'
 const { Option } = Select;
 
 // facebook主页

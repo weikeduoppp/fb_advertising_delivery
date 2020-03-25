@@ -19,7 +19,7 @@ module.exports = {
       host: ["47.104.88.94"],
       // 默认22
       // port: "",
-      ref: "origin/master",
+      ref: "origin/pm2",
       repo: "git@gitlab.com:weikeduoppp/fb_ad_admin.git",
       path: "/www/fb_admin/production", // 发布的目录
       ssh_options: ["StrictHostKeyChecking=no", "PasswordAuthentication=no"],

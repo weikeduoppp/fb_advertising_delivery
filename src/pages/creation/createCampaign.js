@@ -3,7 +3,7 @@ import { Tabs } from "antd";
 import CampaignForm from "../campaign/_Form";
 import { Select } from "antd";
 import * as api from "utils/fb_api";
-import { connect } from "umi";
+import { connect } from "dva";
 const { TabPane } = Tabs;
 const { Option } = Select;
 const CreateCampaign = ({

@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'umi'
+import { connect } from 'dva'
 import { Upload, Button, Icon, message } from "antd";
 import { uploadVideo } from "utils/fb_api";
 // 

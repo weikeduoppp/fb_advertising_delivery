@@ -3,11 +3,9 @@ const path = require("path");
 export default {
   // 打包线上 hash 模式
   base: "/",
-  publicPath:
-    "/dist/",
+  publicPath: "/dist/",
   hash: true,
   // history: "hash",
-  treeShaking: true,
   routes: [
     {
       path: "/",
@@ -25,29 +23,11 @@ export default {
       ]
     }
   ],
-  plugins: [
-    // ref: https://umijs.org/plugin/umi-plugin-react.html
-    [
-      "umi-plugin-react",
-      {
-        antd: true,
-        dva: true,
-        dynamicImport: false,
-        title: "海外投放",
-        dll: false,
+  antd: {},
+  dva: {},
+  dynamicImport: false,
+  title: "海外投放",
 
-        routes: {
-          exclude: [
-            /models\//,
-            /services\//,
-            /model\.(t|j)sx?$/,
-            /service\.(t|j)sx?$/,
-            /components\//
-          ]
-        }
-      }
-    ]
-  ],
   alias: {
     components: path.resolve(__dirname, "src/components/"),
     utils: path.resolve(__dirname, "src/utils/"),

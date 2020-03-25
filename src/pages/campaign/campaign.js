@@ -3,7 +3,7 @@ import Table from "./_Table";
 import style from "./index.less";
 import TableTop from "components/common/TableTop/TableTop";
 import CopyModel from "components/campaign/CopyModel";
-import { connect } from 'umi'
+import { connect } from 'dva'
 
 
 const Campaign = React.memo(({ adaccount_id, data, setSearch, defaultCurrent, total, paging, nextOrPrevious, setDefaultCurrent, loading, search, updateTable, campaigns }) => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getDetailTargeting, getTargetingsearch } from "utils/fb_api";
 import { TreeSelect, Divider, Select, Checkbox, Spin } from "antd";
-import { connect } from "umi";
+import { connect } from "dva";
 import style from "../index.less";
 import { debounce } from "utils";
 const { SHOW_ALL } = TreeSelect;

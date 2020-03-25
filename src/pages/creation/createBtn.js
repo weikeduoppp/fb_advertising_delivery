@@ -5,7 +5,8 @@ import * as campaignConstant from "../campaign/constant";
 import { handleAdCreative } from "../ads/CreativeContant";
 import { handleDynamicCreative } from "../ads/dynamicCreativeContant";
 import { filterParams } from "utils";
-import { history as router, connect } from "umi";
+import { connect } from 'dva'
+import { history as router } from 'umi';
 const createBtn = React.memo(
   ({
     setLoading,

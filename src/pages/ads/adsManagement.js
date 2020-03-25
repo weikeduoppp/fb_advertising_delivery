@@ -1,6 +1,6 @@
 import React from 'react';
 import WithPage from "components/common/withPage";
-import { connect } from 'umi'
+import { connect } from 'dva'
 import Ads from './ads'
 
 const adsetManagement = ({ adaccount_id }) => {

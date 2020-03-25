@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { connect } from "umi";
+import { connect } from "dva";
 import { fbInit } from "../../utils/config";
 import { message } from "antd";
 import * as api from "../../utils/fb_api";

@@ -2,7 +2,7 @@ import React from "react";
 import { Input, Button, message } from "antd";
 import style from "./index.less";
 import { history as router } from 'umi';
-import { connect } from "umi";
+import { connect } from "dva";
 import Pages from "../Paging";
 const { Search } = Input;
 // 表格顶部相关操作  创建 | 检索 | 复制 | 翻页

@@ -2,7 +2,7 @@ import Model from "../common/_Model";
 import CopyNum from "../copy/CopyNum";
 import { useState } from "react";
 import * as api from "utils/fb_api.js";
-import { connect } from "umi";
+import { connect } from "dva";
 // 复制框
 const CopyModel = ({ campaigns, dispatch, title, visible, setVisible, updateTable }) => {
   const [num, setNum] = useState(1);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { connect } from "umi";
+import { connect } from "dva";
 import * as api from "utils/fb_api";
 import Model from "../common/_Model";
 import UploadImage from "./UploadImage";

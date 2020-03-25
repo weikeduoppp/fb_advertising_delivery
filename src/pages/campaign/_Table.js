@@ -3,7 +3,7 @@ import style from "./index.less";
 import { Divider, message, notification } from "antd";
 import Table from "components/common/_Table";
 import Edit from "./edit";
-import { connect } from "umi";
+import { connect } from "dva";
 import { history as router } from 'umi';
 import * as api from "utils/fb_api";
 import { filterParams } from "utils";

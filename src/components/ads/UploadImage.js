@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { connect } from 'umi'
+import { connect } from 'dva'
 import { Upload, Button, Icon, message, Spin } from "antd";
 import { UploadImage } from "utils/fb_api";
 
