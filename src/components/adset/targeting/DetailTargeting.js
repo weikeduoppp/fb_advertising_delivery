@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { getDetailTargeting, getTargetingsearch } from "utils/fb_api";
-import { TreeSelect, Divider, Select, Checkbox, Spin } from "antd";
+import { TreeSelect, Divider, Select, Checkbox, Spin, Button } from "antd";
 import { connect } from "dva";
 import style from "../index.less";
 import { debounce } from "utils";
@@ -242,7 +242,8 @@ const DetailTargeting = React.memo(
     handleSubmit,
     adaccount_id,
     editData,
-    targeting_optimization
+    targeting_optimization,
+    saveSelect
   }) => {
     // 原始数据
     // 兴趣
@@ -265,10 +266,11 @@ const DetailTargeting = React.memo(
     const behaviorsForm = useRef(editData.behaviors || []);
     const demographicsForm = useRef(mergeDemographics(editData) || []);
     const proposalForm = useRef([]);
-
     // 定位搜索相关
     const [searchLoading, setSearchLoading] = useState(true);
     const [searchData, setSearchData] = useState([]);
+    // 累计搜索数据
+    const [accumulative, setAccumulative] = useState([]);
     const [searchValue, setSearchValue] = useState(handleFlexibleSpec() || []);
     // 保存灵活定位内部数据结构 [{}] => {}  修改时给予这结构[{}]
     // eslint-disable-next-line no-unused-vars
@@ -276,7 +278,16 @@ const DetailTargeting = React.memo(
       saveFlexibleSpecObject() || []
     );
 
-    // 灵活定位数据
+    // 实时更新
+    useEffect(() => {
+      if(saveSelect) {
+        interestsForm.current = editData.interests || [];
+        behaviorsForm.current = editData.behaviors || [];
+        demographicsForm.current = mergeDemographics(editData) || [];
+        console.log(123)
+      }
+      return () => {};
+    }, [editData, saveSelect]);
 
     // 处理flexible_spec数据结构
     function handleFlexibleSpec() {
@@ -361,14 +372,16 @@ const DetailTargeting = React.memo(
       if (adaccount_id && !targeting) {
         fetchData();
       } else {
-        // 取缓存
-        setProposal(targeting.Proposal);
-        setInterests(targeting.Interests);
-        setBehaviors(targeting.Behaviors);
-        setDemographics(targeting.Demographics);
-        setInterestsData(targeting.InterestsData);
-        setBehaviorsData(targeting.BehaviorsData);
-        setDemographicsData(targeting.DemographicsData);
+        if (targeting) {
+          // 取缓存
+          setProposal(targeting.Proposal);
+          setInterests(targeting.Interests);
+          setBehaviors(targeting.Behaviors);
+          setDemographics(targeting.Demographics);
+          setInterestsData(targeting.InterestsData);
+          setBehaviorsData(targeting.BehaviorsData);
+          setDemographicsData(targeting.DemographicsData);
+        }
       }
       return () => {
         ignore = true;
@@ -380,16 +393,15 @@ const DetailTargeting = React.memo(
       setSearchLoading(true);
       if (query) {
         const { data } = await getTargetingsearch(adaccount_id, query);
-        // 累积搜索数据
-        setSearchData(d => [...d, ...data]);
+        setSearchData(data);
         setSearchLoading(false);
       }
     }
 
     // 修改 flexible_spec 结构错误: 待修改
     function handleSearchChange(val) {
-      // 全部搜索数据 = 原始的 + 检索的
-      let allData = [...flexibleSpecObject, ...searchData];
+      // 全部搜索数据 = 原始的 + 当前检索的 + 累计选中的
+      let allData = [...flexibleSpecObject, ...searchData, ...accumulative];
       let currentSelect = val.map(d => ({
         id: d.key,
         name: d.label,
@@ -397,6 +409,11 @@ const DetailTargeting = React.memo(
       }));
       setSearchValue(val);
       handleFlexibleSpecSubmit(currentSelect);
+      // 记录当前选中搜索数据
+      let filterSearch = searchData.filter(
+        d => val.filter(v => d.id === v.key).length !== 0
+      );
+      if (filterSearch.length) setAccumulative(d => [...d, ...filterSearch]);
     }
 
     // 处理成上传的数据结构
@@ -431,7 +448,6 @@ const DetailTargeting = React.memo(
       proposalForm.current = val;
       handleDispatchData();
     }
-
     // 统一dispatch
     function handleDispatchData() {
       let last = [
@@ -472,9 +488,10 @@ const DetailTargeting = React.memo(
 
     // 树结构相关参数
     const behaviorsProps = {
+      allowClear: true,
       showSearch: true,
       treeData: behaviorsData,
-      defaultValue: behaviorsForm.current,
+      value: behaviorsForm.current,
       onChange: behaviorsChange,
       treeCheckable: true,
       showCheckedStrategy: SHOW_ALL,
@@ -484,9 +501,10 @@ const DetailTargeting = React.memo(
       }
     };
     const interestsProps = {
+      allowClear: true,
       showSearch: true,
       treeData: interestsData,
-      defaultValue: interestsForm.current,
+      value: interestsForm.current,
       onChange: interestsChange,
       treeCheckable: true,
       showCheckedStrategy: SHOW_ALL,
@@ -496,9 +514,10 @@ const DetailTargeting = React.memo(
       }
     };
     const demographicsProps = {
+      allowClear: true,
       showSearch: true,
       treeData: demographicsData,
-      defaultValue: demographicsForm.current,
+      value: demographicsForm.current,
       onChange: demographicsChange,
       treeCheckable: true,
       showCheckedStrategy: SHOW_ALL,
@@ -511,6 +530,11 @@ const DetailTargeting = React.memo(
     return (
       <div className={style.detailTargeting}>
         <Divider orientation="left">细分定位</Divider>
+        {saveSelect && (
+          <Button onClick={handleDispatchData}>
+            选中保存的受众需要手动更新下细分定位
+          </Button>
+        )}
         <div>
           <p>兴趣</p> <TreeSelect {...interestsProps} showSearch={true} />
         </div>
@@ -524,6 +548,7 @@ const DetailTargeting = React.memo(
         <div>
           <p>建议</p>
           <Select
+            allowClear
             mode="multiple"
             style={{ width: "50%" }}
             placeholder="添加人口统计数据、兴趣和行为"
@@ -550,6 +575,7 @@ const DetailTargeting = React.memo(
         <div>
           <p>定位搜索(系统外的人口统计数据、兴趣和行为)</p>
           <Select
+            allowClear
             mode="multiple"
             labelInValue
             style={{ width: "50%" }}

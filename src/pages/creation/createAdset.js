@@ -50,6 +50,7 @@ export default React.memo(
             state={state}
             dispatch={dispatch}
             objective={objective}
+            initailTargeting={initailState.targeting}
           />
         </TabPane>
         {campaign_id ? (

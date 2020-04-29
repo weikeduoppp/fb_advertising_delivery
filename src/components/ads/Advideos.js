@@ -6,6 +6,8 @@ import style from "./index.less";
 import { Spin } from "antd";
 import Pages from "../common/Paging";
 import MultiplePicture from "./MultiplePicture";
+import UploadVideo from './UploadVideo';
+
 // 获取数组最后一项
 function lengthLastIndex(params) {
   return params.length - 1;
@@ -120,6 +122,15 @@ const Advideos = React.memo(
       }
     }
 
+    // 获取新视频
+    async function reloadAdvideos() {
+      const { data, total_count, paging: pages } = await getAdvideos(
+        adaccount_id
+      );
+      setAll({ data, total_count, pages });
+      initCache(data, total_count, pages);
+    }
+
     // 选中的视频
     function toSelect(target) {
       if (num === 1) {
@@ -151,6 +162,11 @@ const Advideos = React.memo(
           <div className={style.model_top}>
             <span>
               选择视频（{select.length}/{num}）
+              <UploadVideo
+                className={style.upload_btn}
+                fetchData={reloadAdvideos}
+                dispatch={dispatch}
+              />
             </span>
             {paging && (
               <Pages

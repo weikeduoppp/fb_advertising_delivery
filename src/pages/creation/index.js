@@ -27,7 +27,6 @@ const Creation = ({ adaccount_id, dispatch }) => {
     adsetConstant.initail[campaignState.objective]
   );
 
-
   // 广告创意的数据
   const [adsCreativeState, adsCreativeDispatch] = useReducer(
     adsCreativeContant.reducer,

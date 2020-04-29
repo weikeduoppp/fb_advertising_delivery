@@ -19,6 +19,7 @@ const Campaign = React.memo(({ adaccount_id, data, setSearch, defaultCurrent, to
         total={total}
         paging={paging}
         loading={loading}
+        num={50}
         nextOrPrevious={nextOrPrevious}
         setDefaultCurrent={setDefaultCurrent}
         setCopyModel={setCopyModel}

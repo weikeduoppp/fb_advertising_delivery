@@ -1,7 +1,6 @@
 import { Layout, Menu, Icon } from "antd";
 import style from "./_slideLayout.less";
-// import Link from "umi/link";
-import { Link } from "umi";
+import Link from "umi/link";
 import FBHeader from "../header/index";
 const { Header, Content, Footer, Sider } = Layout;
 

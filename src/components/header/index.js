@@ -5,6 +5,8 @@ import { message } from "antd";
 import * as api from "../../utils/fb_api";
 import style from "./index.less";
 import GlobalHeader from "../GlobalHeader/index";
+import request from "utils/api";
+import { host } from "utils/config";
 
 class FbReportTool extends Component {
   state = {
@@ -46,11 +48,9 @@ class FbReportTool extends Component {
             // let { access_token: token } = await api.getToken(accessToken);
             // 安全清单: 在客户端上使用唯一的短期口令。
             message.info("已成功登录");
-            dispatch({
-              type: "global/set_access_token",
-              payload: accessToken
-            });
             localStorage.setItem("access_token", accessToken);
+
+            this.getLongToken(accessToken);
             // 获取用户信息
             this.getUser();
             this.getNewAdaccounts();
@@ -60,17 +60,30 @@ class FbReportTool extends Component {
         },
         { scope: "ads_read,ads_management,manage_pages,instagram_basic" }
       );
-      // 测试用的
-      // this.getUser();
-      // this.getNewAdaccounts();
     } else {
-      // dispatch({ type: "global/set_access_token", payload: access_token });
       // 获取用户信息
       this.getUser();
       options.length === 0
         ? this.getNewAdaccounts()
         : dispatch({ type: "global/set_options", payload: options });
+      // this.getLongToken(access_token);
     }
+  }
+
+  // 获取长期口令
+  getLongToken(accessToken) {
+    request({
+      url: `${host}/api/token`,
+      method: "GET",
+      params: {
+        accessToken
+      },
+      success(res) {
+        if(res.status === 1) {
+          localStorage.setItem("access_token", res.access_token);
+        }
+      }
+    });
   }
 
   // 获取fb账号信息

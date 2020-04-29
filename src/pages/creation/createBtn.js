@@ -6,7 +6,7 @@ import { handleAdCreative } from "../ads/CreativeContant";
 import { handleDynamicCreative } from "../ads/dynamicCreativeContant";
 import { filterParams } from "utils";
 import { connect } from 'dva'
-import { history as router } from 'umi';
+import router from "umi/router";
 const createBtn = React.memo(
   ({
     setLoading,

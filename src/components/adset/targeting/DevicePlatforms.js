@@ -12,7 +12,7 @@ const DevicePlatforms = React.memo(({ handleSubmit, device_platforms }) => {
         <Checkbox.Group
           className={style.placements_checkbox}
           options={plainOptions}
-          defaultValue={device_platforms || plainOptions}
+          value={device_platforms || plainOptions}
           onChange={val => handleSubmit(val)}
         />
       </div>

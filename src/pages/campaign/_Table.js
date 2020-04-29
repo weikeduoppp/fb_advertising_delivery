@@ -1,10 +1,10 @@
-import { useState, memo } from "react";
+import { useState, memo, useEffect } from "react";
 import style from "./index.less";
 import { Divider, message, notification } from "antd";
 import Table from "components/common/_Table";
 import Edit from "./edit";
 import { connect } from "dva";
-import { history as router } from 'umi';
+import router from "umi/router";
 import * as api from "utils/fb_api";
 import { filterParams } from "utils";
 import AppModel from "../../components/copy/AppModel";
@@ -21,7 +21,8 @@ const TableComponent = memo(
     dispatch,
     adset_select,
     setCopyModel,
-    adaccount_id
+    adaccount_id,
+    copied_id
   }) => {
     // 跨账户复制的数据
     const [copyData, setCopyData] = useState(null);
@@ -41,6 +42,35 @@ const TableComponent = memo(
     const [visible, setVisible] = useState(false);
     const [campaign_id, setCampaignId] = useState(null);
     const [initailState, setInitailState] = useState(null);
+
+
+    // 进入编辑
+    function toEdit(record) {
+      setCampaignId(record.id);
+      setInitailState({
+        objective: record.objective,
+        status: record.status,
+        name: record.name,
+        daily_budget: record.daily_budget && record.daily_budget / 100,
+        bid_strategy: record.bid_strategy,
+        special_ad_category: record.special_ad_category
+      });
+      setVisible(true);
+    }
+
+    // 监听copied_id, 复制完后编辑
+    useEffect(() => {
+      if (copied_id) {
+        let record = data.find(d => d.id === copied_id);
+        toEdit(record);
+        // 清空
+        dispatch({
+          type: "global/set_copied_id",
+          payload: ''
+        });
+      }
+      return () => {};
+    }, [copied_id, data, dispatch]);
 
     // 表格列标题
     const columns = [
@@ -80,17 +110,7 @@ const TableComponent = memo(
               className={style._a}
               onClick={e => {
                 // 编辑 初始化数据
-                setCampaignId(record.id);
-                setInitailState({
-                  objective: record.objective,
-                  status: record.status,
-                  name: record.name,
-                  daily_budget:
-                    record.daily_budget && record.daily_budget / 100,
-                  bid_strategy: record.bid_strategy,
-                  special_ad_category: record.special_ad_category
-                });
-                setVisible(true);
+                toEdit(record);
               }}
             >
               编辑
@@ -454,7 +474,9 @@ const mapStateToProps = (state, ownProps) => {
     // 已选中的广告组
     adset_select: state.global.adsets,
     // 广告账户id
-    adaccount_id: state.global.adaccount_id
+    adaccount_id: state.global.adaccount_id,
+    // 复制后要编辑的id
+    copied_id: state.global.copied_id
   };
 };
 

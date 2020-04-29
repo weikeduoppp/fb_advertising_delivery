@@ -108,7 +108,6 @@ const BILLING_EVENT = {
 
 export default memo(
   ({ objective, optimization_goal, billing_event, handleSubmit }) => {
-    console.log(objective);
     return (
       <>
         <div className={style.targeting_con}>

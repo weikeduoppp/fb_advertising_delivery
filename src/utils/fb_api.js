@@ -59,7 +59,7 @@ function handlePagesReturn(res) {
 }
 
 // 获取广告系列 分页模式修改,  用户来请求下一页 pages分页对象
-export let getCampaign = (id, pages = {}, limit = 200) => {
+export let getCampaign = (id, pages = {}, limit = 50) => {
   let param = {
     fields:
       "name,status,daily_budget,objective,bid_strategy,special_ad_category",
@@ -96,7 +96,7 @@ export let updateCampaign = (id, param) => {
 };
 
 // 获取账户下的广告组
-export let getAdset = (id, pages = {}, limit = 200) => {
+export let getAdset = (id, pages = {}, limit = 50) => {
   let param = {
     fields:
       "id,name,campaign_id,promoted_object,targeting,optimization_goal,daily_budget,bid_amount,billing_event,bid_strategy,start_time,end_time,is_dynamic_creative,campaign{objective,bid_strategy,daily_budget},status",
@@ -276,7 +276,7 @@ export let getPixelId = id => {
 */
 
 // 获取账户下的广告 和 广告创意
-export let getAds = (id, pages = {}, limit = 100) => {
+export let getAds = (id, pages = {}, limit = 50) => {
   let param = {
     fields:
       "id,adset_id,name,status,campaign{objective},adcreatives{object_story_spec,asset_feed_spec},adset{promoted_object,is_dynamic_creative}",
@@ -302,7 +302,7 @@ export let updateAds = (id, param) => {
 };
 
 // 获取账户下的图片库
-export let getAdimages = (id, pages = {}, limit = 200) => {
+export let getAdimages = (id, pages = {}, limit = 100) => {
   let param = {
     fields: "hash,name,height,width,permalink_url,url_128",
     summary: "total_count",
@@ -339,7 +339,7 @@ export let getVideoInfo = (id, file, name) => {
   return api.get(`/${id}`, { fields: "thumbnails,permalink_url,picture" });
 };
 
-// 简单上传视频
+// 简单上传视频 通过可以下载的视频url
 export let uploadVideo = (id, file, name) => {
   // return api.post(`/${id}/advideos`, {
   //   file_url:
@@ -347,7 +347,7 @@ export let uploadVideo = (id, file, name) => {
   //   name
   // });
   return api.post(`/${id}/advideos`, {
-    source: file,
+    file_url: file,
     name
   });
 };
@@ -405,17 +405,17 @@ export let Copy = (ids, id_string) => {
         })),
         name: "copy"
       });
-      resolve(async_sessions); // 删去等待时间
-      // let res = [];
-      // for (let i = 0; i < async_sessions.length; i++) {
-      //   await timeout(() => {}, 1000);
-      //   let obj = await getAsyncadrequestsets(async_sessions[i].id);
-      //   if (obj.status === "COMPLETED") {
-      //     message.success(`${obj.name}复制成功`);
-      //     res.push(obj);
-      //   }
-      // }
-      // res.length ? resolve(res) : resolve(false);
+      // resolve(async_sessions); // 删去等待时间
+      let res = [];
+      for (let i = 0; i < async_sessions.length; i++) {
+        await timeout(() => {}, 1000);
+        let obj = await getAsyncadrequestsets(async_sessions[i].id);
+        if (obj.status === "COMPLETED") {
+          message.success(`${obj.name}复制成功`);
+          res.push(obj);
+        }
+      }
+      res.length ? resolve(res) : resolve(false);
     }
   });
 };
@@ -456,7 +456,7 @@ async function getAsyncadrequestsets(id, num = 0) {
         if (num < 4) {
           num++;
           // 等3秒后再去请求 底下若广告多则缓慢.
-          await timeout(() => {}, 7000);
+          await timeout(() => {}, 5000);
           return await getAsyncadrequestsets(id, num);
         } else {
           notification.error({
@@ -503,17 +503,18 @@ export let copyAds = (ids, adsets) => {
         asyncbatch: asyncbatchArr,
         name: "copy"
       });
-      resolve(async_sessions);
-      // let res = [];
-      // for (let i = 0; i < async_sessions.length; i++) {
-      //   await timeout(() => {}, 1000);
-      //   let obj = await getAsyncadrequestsets(async_sessions[i].id);
-      //   if (obj.status === "COMPLETED") {
-      //     message.success(`${obj.name}复制成功`);
-      //     res.push(obj);
-      //   }
-      // }
-      // res.length ? resolve(res) : resolve(false);
+      // resolve(async_sessions);
+      // 恢复复制等待
+      let res = [];
+      for (let i = 0; i < async_sessions.length; i++) {
+        await timeout(() => {}, 1000);
+        let obj = await getAsyncadrequestsets(async_sessions[i].id);
+        if (obj.status === "COMPLETED") {
+          message.success(`${obj.name}复制成功`);
+          res.push(obj);
+        }
+      }
+      res.length ? resolve(res) : resolve(false);
     }
   });
 };
@@ -529,7 +530,6 @@ export let getImages = (id, hashes) => {
 };
 
 // 获取长期访问口令
-
 export let getToken = token => {
   return api.get("/oauth/access_token", {
     grant_type: "fb_exchange_token",

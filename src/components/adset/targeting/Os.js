@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Checkbox, Select } from "antd";
+import { Checkbox, Select, Button } from "antd";
 import { getPublisherPlatforms } from "utils/fb_api";
 import style  from '../index.less'
 import { connect } from 'dva'
@@ -38,7 +38,15 @@ function handleEdit(user_os) {
 }
 // 移动设备  编辑时 user_os可能是["iOS_ver_4.0_and_above"] ['Android_ver_4.2_and_above'] ['iOS_ver_8.0_to_9.0']
 const DevicePlatforms = React.memo(
-  ({ os_cache, dispatch, handleSubmit, user_os, wireless_carrier, user_device }) => {
+  ({
+    os_cache,
+    dispatch,
+    handleSubmit,
+    user_os,
+    wireless_carrier,
+    user_device,
+    saveSelect
+  }) => {
     let [defaultOS, defaultMin, defaultMax] = handleEdit(
       user_os || plainOptions
     );
@@ -51,6 +59,7 @@ const DevicePlatforms = React.memo(
     const [min, setMin] = useState(defaultMin);
     const [max, setMax] = useState(defaultMax);
 
+    console.log(OS, defaultOS, defaultMin, defaultMax);
     // 处理版本号数据
     function handleEditionData(data) {
       let arr = data.filter(item => plainOptions.indexOf(item.platform) !== -1);
@@ -132,14 +141,29 @@ const DevicePlatforms = React.memo(
         : handleSubmit({ wireless_carrier: [] });
     }
 
+    const updateOs = () => {
+      if (defaultOS.length !== OS) {
+        setOS(defaultOS);
+        setMin(defaultMin);
+        setMax(defaultMax);
+      }
+    };
+
+ 
+
     return (
       <>
         <div className={style.targeting_con}>
+          {saveSelect && (
+            <div>
+              <Button onClick={updateOs}>选中保存的受众需要手动更新下</Button>
+            </div>
+          )}
           <span className={style.targeting_label}>移动设备(全选或两选一)</span>
           <Checkbox.Group
             className={style.placements_checkbox}
             options={plainOptions}
-            defaultValue={OS}
+            value={OS}
             onChange={val => {
               handleSubmit({
                 user_os: val
@@ -163,7 +187,7 @@ const DevicePlatforms = React.memo(
                 mode="multiple"
                 style={{ width: "50%" }}
                 placeholder="输入设备"
-                defaultValue={user_device || []}
+                value={user_device || []}
                 onChange={val => handleSubmit({ user_device: val })}
                 filterOption={(input, option) =>
                   option.props.children
@@ -179,7 +203,7 @@ const DevicePlatforms = React.memo(
             <div className={style.targeting_con}>
               <span className={style.targeting_label}>操作系统版本</span>
               <Select
-                defaultValue={min || "无"}
+                value={min || "无"}
                 style={{ width: 80 }}
                 onChange={handleEditionMin}
               >
@@ -196,7 +220,7 @@ const DevicePlatforms = React.memo(
               </Select>
               <span> - </span>
               <Select
-                defaultValue={max || "无"}
+                value={max || "无"}
                 style={{ width: 80 }}
                 onChange={handleEditionMax}
               >

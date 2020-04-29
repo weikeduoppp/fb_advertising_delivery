@@ -12,7 +12,7 @@ export default memo(({ handleSubmit, publisher_platforms }) => {
         <Checkbox.Group
           className={style.placements_checkbox}
           options={plainOptions}
-          defaultValue={publisher_platforms || plainOptions}
+          value={publisher_platforms || plainOptions}
           onChange={val => handleSubmit(val)}
         />
       </div>

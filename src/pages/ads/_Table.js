@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import style from "../adset/index.less";
 import { Divider, Spin } from "antd";
 import Table from "components/common/_Table";
@@ -214,7 +214,8 @@ const TableComponent = ({
   selectKeys,
   adaccount_id,
   setCopyModel,
-  global_images
+  global_images,
+  copied_id
 }) => {
   // 过滤设计以外的营销目标
   const dataSource = data.filter(
@@ -252,6 +253,41 @@ const TableComponent = ({
     initailState.current = initail;
     setVisible(true);
   }
+
+  // 监听copied_id, 复制完后编辑
+  useEffect(() => {
+    // hooks dependency
+    async function handleEdit(record) {
+      const { campaign, adset, ...other } = record;
+      let is_dynamic_creative = adset.is_dynamic_creative;
+      setEditLoading(true);
+      const initail = await handleEditAdsData(
+        other,
+        campaign.objective,
+        dispatch,
+        adaccount_id,
+        is_dynamic_creative
+      );
+      setIsDynamicCreative(is_dynamic_creative);
+      set_object_store_url(adset?.promoted_object?.object_store_url);
+      setCampaignData(campaign);
+      setEditLoading(false);
+      setAds_id(record.id);
+      initailState.current = initail;
+      setVisible(true);
+    }
+
+    if (copied_id) {
+      let record = data.find(d => d.id === copied_id);
+      handleEdit(record);
+      // 清空
+      dispatch({
+        type: "global/set_copied_id",
+        payload: ""
+      });
+    }
+    return () => {};
+  }, [copied_id, data, dispatch, adaccount_id]);
 
   // 表格列标题
   const columns = [
@@ -391,6 +427,8 @@ const mapStateToProps = (state, ownProps) => {
     adset_select: state.global.adsets.map(item => item.id),
     campaigns_select: state.global.campaigns.map(item => item.id),
     global_images: state.global.images,
+    // 复制后要编辑的id
+    copied_id: state.global.copied_id
   };
 };
 

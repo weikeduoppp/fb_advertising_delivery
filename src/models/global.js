@@ -42,6 +42,8 @@ const state = {
   videos: [],
   // 创建来源 (系列, 组)
   createDirection: "campaign",
+  // 复制后的id
+  copied_id: '',
 
   /* 缓存公共数据 */
   // 自定义受众

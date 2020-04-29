@@ -18,16 +18,16 @@ export default memo(({ handleSubmit, min, max }) => {
 
   function handleAge_min(value) {
     setAge_min(value);
-    handleSubmit({ age_min: value, age_max });
+    handleSubmit({ age_min: value, age_max: max });
   }
   function handleAge_max(value) {
     setAge_max(value);
-    handleSubmit({ age_min, age_max: value });
+    handleSubmit({ age_min: min, age_max: value });
   }
   return (
     <div>
       <p>年龄</p>
-      <Select defaultValue={min} style={{ width: 80 }} onChange={handleAge_min}>
+      <Select value={min} style={{ width: 80 }} onChange={handleAge_min}>
         {children.map(item => (
           <Option
             key={item + "age_min"}
@@ -39,7 +39,7 @@ export default memo(({ handleSubmit, min, max }) => {
         ))}
       </Select>
       <span> - </span>
-      <Select defaultValue={max} style={{ width: 80 }} onChange={handleAge_max}>
+      <Select value={max} style={{ width: 80 }} onChange={handleAge_max}>
         {children.map(item => (
           <Option
             key={item + "age_max"}

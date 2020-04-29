@@ -1,5 +1,5 @@
-
-import { withRouter, connect } from "umi";
+import { connect } from "dva";
+import withRouter from "umi/withRouter";
 import Layout from "../components/_slideLayout/index";
 function BasicLayout({ children, count, location: { pathname } }) {
   return (

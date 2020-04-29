@@ -20,7 +20,7 @@ export default memo(({ app_install_state, handleSubmit }) => {
       <Select
         style={{ width: "30%" }}
         placeholder="添加关系类型"
-        defaultValue={app_install_state || undefined}
+        value={app_install_state || undefined}
         onChange={val => handleSubmit(val)}
       >
         {options.map((d, i) => (

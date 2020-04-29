@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import style from "./index.less";
 import { Divider } from "antd";
 import Table from "components/common/_Table";
 import Edit from "./edit";
 import { connect } from "dva";
-import { history as router } from 'umi';
+import router from "umi/router";
 import * as CampaignContant from "pages/campaign/constant";
 
 const TableComponent = ({
@@ -15,7 +15,8 @@ const TableComponent = ({
   updateTable,
   dispatch,
   campaigns_select,
-  setCopyModel
+  setCopyModel,
+  copied_id
 }) => {
   // 过滤设计以外的营销目标
   const dataSource = data.filter(
@@ -27,6 +28,35 @@ const TableComponent = ({
   const [initailState, setInitailState] = useState(null);
   // 记录编辑的系列目标
   const [campaignData, setCampaignData] = useState(null);
+
+  // 进入编辑
+  function toEdit(record) {
+    setAdsetId(record.id);
+    const { campaign, ...other } = record;
+    // 赋值的时候 / 100;
+    if (other.daily_budget) other.daily_budget = other.daily_budget / 100;
+    if (other.bid_amount) other.bid_amount = other.bid_amount / 100;
+    setCampaignData(campaign);
+    setInitailState({
+      ...other
+    });
+    setVisible(true);
+  }
+
+  // 监听copied_id, 复制完后编辑
+  useEffect(() => {
+    if (copied_id) {
+      let record = data.find(d => d.id === copied_id);
+      toEdit(record);
+      // 清空
+      dispatch({
+        type: "global/set_copied_id",
+        payload: ''
+      });
+    }
+    return () => {};
+  }, [copied_id, data, dispatch]);
+
   // 表格列标题
   const columns = [
     {
@@ -64,18 +94,8 @@ const TableComponent = ({
           <span
             className={style._a}
             onClick={e => {
-              // console.log(record);
-              setAdsetId(record.id);
-              const { campaign, ...other } = record;
-              // 赋值的时候 / 100;
-              if (other.daily_budget)
-                other.daily_budget = other.daily_budget / 100;
-              if (other.bid_amount) other.bid_amount = other.bid_amount / 100;
-              setCampaignData(campaign);
-              setInitailState({
-                ...other
-              });
-              setVisible(true);
+              // 编辑
+              toEdit(record);
             }}
           >
             编辑
@@ -153,9 +173,10 @@ const mapStateToProps = (state, ownProps) => {
   return {
     // 表格选中
     selectKeys: state.global.adsets.map(item => item.key),
-
     // 选中的广告系列
-    campaigns_select: state.global.campaigns.map(item => item.id)
+    campaigns_select: state.global.campaigns.map(item => item.id),
+    // 复制后要编辑的id
+    copied_id: state.global.copied_id
   };
 };
 

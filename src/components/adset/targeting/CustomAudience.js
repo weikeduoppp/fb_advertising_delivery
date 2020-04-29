@@ -30,7 +30,7 @@ const CustomAudience = React.memo(
           mode="multiple"
           style={{ width: "50%" }}
           placeholder="添加之前创建的自定义受众或类似受众"
-          defaultValue={
+          value={
             customAudienceFormData ? customAudienceFormData.map(d => d.id) : []
           }
           onChange={val =>

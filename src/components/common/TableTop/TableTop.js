@@ -1,7 +1,7 @@
 import React from "react";
 import { Input, Button, message } from "antd";
 import style from "./index.less";
-import { history as router } from 'umi';
+import router from "umi/router";
 import { connect } from "dva";
 import Pages from "../Paging";
 const { Search } = Input;

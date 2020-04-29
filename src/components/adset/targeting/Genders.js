@@ -19,7 +19,7 @@ export default memo(({ handleSubmit, genders: state }) => {
       <p>年龄</p>
       <Radio.Group
         onChange={e => handleSubmit(genders[e.target.value])}
-        defaultValue={checkGenders()}
+        value={checkGenders()}
         buttonStyle="solid"
       >
         <Radio.Button value="all">不限</Radio.Button>

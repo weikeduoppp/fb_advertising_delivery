@@ -47,7 +47,7 @@ const Adgeolocation = React.memo(
             mode="multiple"
             style={{ width: "80%" }}
             placeholder="输入国家/地区"
-            defaultValue={countries ? [...countries] : []}
+            value={countries ? [...countries] : []}
             onChange={val => {
               handleSubmit({
                 countries: val,
@@ -70,7 +70,7 @@ const Adgeolocation = React.memo(
             mode="multiple"
             style={{ width: "80%" }}
             placeholder="全球,欧洲或北美洲"
-            defaultValue={country_groups ? [...country_groups] : []}
+            value={country_groups ? [...country_groups] : []}
             onChange={val => {
               handleSubmit({
                 countries,

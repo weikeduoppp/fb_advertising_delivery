@@ -18,15 +18,24 @@ const CopyModel = ({ campaigns, dispatch, title, visible, setVisible, updateTabl
     } else {
       ids = [...ids, ...campaigns.slice()];
     }
-    let async_sessions = await api.Copy(ids);
-    callback(false);
-    setVisible(false);
-    if (async_sessions) {
-      dispatch({ type: "global/set_campaigns", payload: [] });
-      let res = await api.CopyCallback(async_sessions);
-      if (res) {
-        updateTable();
-      }
+    // 模式修改 => 复制后进入编辑
+    let res = await api.Copy(ids);
+    if (res) {
+      console.log(res)
+      callback(false);
+      setVisible(false);
+      dispatch({
+        type: "global/set_campaigns",
+        payload: []
+      });
+      // 复制后进入编辑
+      await updateTable();
+      // 取复制完的id
+      let copied_id = JSON.parse(res[0].result).copied_campaign_id;
+      dispatch({
+        type: "global/set_copied_id",
+        payload: copied_id
+      });
     } 
   }
 

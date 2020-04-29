@@ -27,7 +27,7 @@ const Adlocale = React.memo(({ locale, dispatch, handleSubmit, locales }) => {
         mode="multiple"
         style={{ width: "50%" }}
         placeholder="输入语言"
-        defaultValue={locales ? [...locales.map(d => d.toString())] : []}
+        value={locales ? [...locales.map(d => d.toString())] : []}
         onChange={val => handleSubmit(val)}
         filterOption={(input, option) =>
           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0

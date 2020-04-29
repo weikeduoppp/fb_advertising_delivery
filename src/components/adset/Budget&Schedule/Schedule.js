@@ -1,7 +1,7 @@
 import { Radio, DatePicker } from "antd";
 import { memo, useState } from "react";
 import style from "../index.less";
-import moment from "moment";
+import dayjs from "dayjs";
 const { RangePicker } = DatePicker;
 
 // 禁用时间表
@@ -66,14 +66,14 @@ export default memo(({ start_time, end_time, handleSubmit }) => {
       {time === "now" && (
         <div className={style.targeting_con}>
           <span className={style.targeting_label}>开始日期</span>
-          <span>{moment(start_time).format("YYYY-MM-DD HH:mm")}</span>
+          <span>{dayjs(start_time).format("YYYY-MM-DD HH:mm")}</span>
         </div>
       )}
       {time === "set" && (
         <div className={style.targeting_con}>
           <RangePicker
             defaultValue={
-              end_time ? [moment(start_time), moment(end_time)] : undefined
+              end_time ? [dayjs(start_time), dayjs(end_time)] : undefined
             }
             showTime={{ format: "HH:mm" }}
             format="YYYY-MM-DD HH:mm"

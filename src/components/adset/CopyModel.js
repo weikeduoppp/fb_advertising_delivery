@@ -103,17 +103,21 @@ const CopyModel = ({
       ids = [...ids, ...adsets.slice()];
     }
     // eslint-disable-next-line no-unused-vars
-    let async_sessions = campaign_id
+    let res = campaign_id
       ? await api.Copy(ids, `campaign_id=${campaign_id}`)
       : await api.Copy(ids);
-    callback(false);
-    setVisible(false);
-    if (async_sessions) {
+    if (res) {
+      console.log(res)
+      callback(false);
+      setVisible(false);
       dispatch({ type: "global/set_adsets", payload: [] });
-      let res = await api.CopyCallback(async_sessions);
-      if (res) {
-        updateTable();
-      }
+      await updateTable();
+      // 取复制完的id
+      let copied_id = JSON.parse(res[0].result).copied_adset_id;
+      dispatch({
+        type: "global/set_copied_id",
+        payload: copied_id
+      });
     }
   }
 
