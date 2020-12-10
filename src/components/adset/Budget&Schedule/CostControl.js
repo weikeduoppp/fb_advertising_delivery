@@ -1,6 +1,7 @@
 import { InputNumber, Radio } from "antd";
 import { memo, useState } from "react";
 import style from "../index.less";
+import Budget from "../../campaign/Budget.js";
 
 // 最低费用
 const LOWEST_COST_WITHOUT_CAP = "LOWEST_COST_WITHOUT_CAP";
@@ -23,10 +24,12 @@ export default memo(
     daily_budget,
     handleAmount,
     handleStrategy,
-    handleBudget
+    state,
+    dispatch
   }) => {
     const [Cost, setCost] = useState(bid_amount || 0);
     const [strategy, setStrategy] = useState("COST_CAP");
+    console.log(campaign_daily_budget);
     return (
       <>
         <div className={style.targeting_con}>
@@ -57,55 +60,55 @@ export default memo(
           />
         </div>
         {/* 竟价策略只能二者设置一次(系列和广告组)) */}
-        {campaign_daily_budget === 0 ||
-          (campaign_daily_budget === undefined && (
-            <>
-              <div>
-                <p>竟价策略</p>
-                <Radio.Group
-                  disabled={!Cost}
-                  onChange={e => {
-                    setStrategy(e.target.value);
-                    handleStrategy(e.target.value);
-                  }}
-                  defaultValue={bid_strategy_options[0].key}
-                >
-                  {bid_strategy_options.map(d => {
-                    // 目标费用 只支持的优化目标为应用程序下载、应用程序安装、异地转换、潜在客户开发
-                    if (d.key === "TARGET_COST") {
-                      return objective === "APP_INSTALLS" ? (
-                        <Radio key={d.key} value={d.key}>
-                          {d.name}
-                        </Radio>
-                      ) : (
-                        ""
-                      );
-                    }
-                    return (
+        {campaign_daily_budget === 0 && (
+          <>
+            <div>
+              <p>竟价策略</p>
+              <Radio.Group
+                disabled={!Cost}
+                onChange={e => {
+                  setStrategy(e.target.value);
+                  handleStrategy(e.target.value);
+                }}
+                defaultValue={bid_strategy_options[0].key}
+              >
+                {bid_strategy_options.map(d => {
+                  // 目标费用 只支持的优化目标为应用程序下载、应用程序安装、异地转换、潜在客户开发
+                  if (d.key === "TARGET_COST") {
+                    return objective === "APP_INSTALLS" ? (
                       <Radio key={d.key} value={d.key}>
                         {d.name}
                       </Radio>
+                    ) : (
+                      ""
                     );
-                  })}
-                </Radio.Group>
-              </div>
-              <div className={style.targeting_con}>
-                <span className={style.targeting_label}>预算</span>
-                <InputNumber
-                  defaultValue={daily_budget || 0}
-                  name="daily_budget"
-                  formatter={value =>
-                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                   }
-                  parser={value => value.replace(/\$\s?|(,*)/g, "")}
-                  onChange={value => {
-                    handleBudget(value);
-                  }}
-                  min={0}
-                />
-              </div>
-            </>
-          ))}
+                  return (
+                    <Radio key={d.key} value={d.key}>
+                      {d.name}
+                    </Radio>
+                  );
+                })}
+              </Radio.Group>
+            </div>
+            <Budget state={state} dispatch={dispatch} text={"广告组预算"} />
+            {/* <div className={style.targeting_con}>
+              <span className={style.targeting_label}>预算</span>
+              <InputNumber
+                defaultValue={daily_budget || 0}
+                name="daily_budget"
+                formatter={value =>
+                  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={value => value.replace(/\$\s?|(,*)/g, "")}
+                onChange={value => {
+                  handleBudget(value);
+                }}
+                min={0}
+              />
+            </div> */}
+          </>
+        )}
       </>
     );
   }

@@ -62,7 +62,7 @@ function handlePagesReturn(res) {
 export let getCampaign = (id, pages = {}, limit = 50) => {
   let param = {
     fields:
-      "name,status,daily_budget,objective,bid_strategy,special_ad_category",
+      "name,status,daily_budget,objective,lifetime_budget,bid_strategy,special_ad_categories",
     summary: "total_count",
     limit
   };
@@ -82,6 +82,16 @@ export let createCampaign = (id, param, type = "CREATE") => {
     delete param.daily_budget;
     delete param.bid_strategy;
   }
+  if (Number(param.lifetime_budget) > 0) {
+    if (type === "CREATE") param.lifetime_budget = param.lifetime_budget * 100;
+  } else {
+    delete param.lifetime_budget;
+  }
+  // 更新后兼容之前的版本5.0   7.0之间的创建 special_ad_category -> special_ad_categories
+  if (param.special_ad_category) {
+    param.special_ad_categories = JSON.stringify([param.special_ad_category]);
+    delete param.special_ad_category;
+  }
   return api.post(`/${id}/campaigns`, param);
 };
 
@@ -99,8 +109,7 @@ export let updateCampaign = (id, param) => {
 export let getAdset = (id, pages = {}, limit = 50) => {
   let param = {
     fields:
-      "id,name,campaign_id,promoted_object,targeting,optimization_goal,daily_budget,bid_amount,billing_event,bid_strategy,start_time,end_time,is_dynamic_creative,campaign{objective,bid_strategy,daily_budget},status",
-    include_drafts: "true",
+      "id,name,campaign_id,promoted_object,targeting,optimization_goal,daily_budget,lifetime_budget,bid_amount,billing_event,bid_strategy,start_time,end_time,is_dynamic_creative,campaign{objective,bid_strategy,daily_budget},status",
     summary: "total_count",
     limit
   };
@@ -114,8 +123,7 @@ export let getAdset = (id, pages = {}, limit = 50) => {
 export let getCampaignAdset = (campaign_id, limit = 1000, after) => {
   let param = {
     fields:
-      "id,name,campaign_id,promoted_object,targeting,optimization_goal,daily_budget,bid_amount,billing_event,bid_strategy,start_time,end_time,is_dynamic_creative,status",
-    include_drafts: "true",
+      "id,name,campaign_id,promoted_object,targeting,optimization_goal,daily_budget,lifetime_budget,bid_amount,billing_event,bid_strategy,start_time,end_time,is_dynamic_creative,status",
     limit
   };
   if (after) param.after = after;
@@ -137,6 +145,8 @@ export let getCampaignAdset = (campaign_id, limit = 1000, after) => {
 function handleAdsetParam(param, type) {
   if (type === "CREATE") {
     if (param.daily_budget) param.daily_budget = param.daily_budget * 100;
+    if (param.lifetime_budget)
+      param.lifetime_budget = param.lifetime_budget * 100;
     if (param.bid_amount) param.bid_amount = param.bid_amount * 100;
   }
   // 在最低费用时不用删除策略
@@ -148,7 +158,8 @@ function handleAdsetParam(param, type) {
       delete param.bid_strategy;
     delete param.bid_amount;
   }
-
+  if (param.lifetime_budget === 0) delete param.lifetime_budget;
+  if (param.daily_budget === 0) delete param.daily_budget;
   return param;
 }
 // 创建广告组
@@ -169,9 +180,15 @@ export let getApp = (id, query, app_store) => {
   });
 };
 // 检索账户绑定的app
+// export let getAdaccountApp = id => {
+//   return api.get(`/${id}/applications`, {
+//     fields: "object_store_urls,id,name"
+//   });
+// };
+// 广告帐户可发布广告的应用 (开发者app也在其中)
 export let getAdaccountApp = id => {
-  return api.get(`/${id}/applications`, {
-    fields: "object_store_urls,id,name"
+  return api.get(`/${id}/advertisable_applications`, {
+    fields: "app_install_tracked,id,name,object_store_urls"
   });
 };
 
@@ -280,7 +297,6 @@ export let getAds = (id, pages = {}, limit = 50) => {
   let param = {
     fields:
       "id,adset_id,name,status,campaign{objective},adcreatives{object_story_spec,asset_feed_spec},adset{promoted_object,is_dynamic_creative}",
-    include_drafts: "true",
     summary: "total_count",
     limit
   };
@@ -336,7 +352,7 @@ export let getAdvideos = (id, pages = {}, limit = 100) => {
 
 // 获取视频信息
 export let getVideoInfo = (id, file, name) => {
-  return api.get(`/${id}`, { fields: "thumbnails,permalink_url,picture" });
+  return api.get(`/${id}`, { fields: "picture,thumbnails,title" });
 };
 
 // 简单上传视频 通过可以下载的视频url
@@ -569,8 +585,9 @@ export let batchCreateAdset = (adaccount_id, campaign_id, adsetGroup, app) => {
         delete adsetState.targeting.custom_audiences;
         delete adsetState.targeting.excluded_connections;
       }
-      // 如果是应用安装类型 重置APP
-      if (app) adsetState.promoted_object = app;
+      // 如果是应用安装类型 如果有应用事件不覆盖 重置APP
+      if (app)
+        adsetState.promoted_object = { ...adsetState.promoted_object, ...app };
       return {
         method: "POST",
         relative_url: `${adaccount_id}/adsets`,

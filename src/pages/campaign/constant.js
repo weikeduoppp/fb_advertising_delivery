@@ -14,11 +14,13 @@ export const initail = {
   name: "",
   // 单日预算
   daily_budget: 0,
+  // 总预算
+  lifetime_budget : 0,
   // 竟价策略 LOWEST_COST_WITHOUT_CAP，LOWEST_COST_WITH_BID_CAP，TARGET_COST || 费用上限 竞价上限 目标费用
   bid_strategy: "LOWEST_COST_WITHOUT_CAP",
   status: "ACTIVE",
   // 特殊广告类别 V5.0开始
-  special_ad_category: "NONE"
+  special_ad_categories: "[]"
 };
 
 // reducer
@@ -32,10 +34,12 @@ export function reducer(state, action) {
       return { ...state, name: action.payload };
     case "daily_budget":
       return { ...state, daily_budget: action.payload };
+    case "lifetime_budget":
+      return { ...state, lifetime_budget: action.payload };
     case "bid_strategy":
       return { ...state, bid_strategy: action.payload };
-    case "special_ad_category":
-      return { ...state, special_ad_category: action.payload };
+    case "special_ad_categories":
+      return { ...state, special_ad_categories: action.payload };
     case "status":
       return { ...state, status: action.payload };
     case "reset":

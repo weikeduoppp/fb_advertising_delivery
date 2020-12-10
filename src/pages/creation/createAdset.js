@@ -6,7 +6,7 @@ import { getCampaignAdset } from "utils/fb_api";
 const { TabPane } = Tabs;
 const { Option } = Select;
 export default React.memo(
-  ({ campaign_id, bid_strategy,daily_budget, state, dispatch, initailState, objective }) => {
+  ({ campaign_id, bid_strategy, daily_budget, state, dispatch, initailState, objective }) => {
     // 组数据
     const [options, setData] = useState([]);
     // 现有组选中值

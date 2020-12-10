@@ -176,6 +176,8 @@ export function reducer(state, action) {
       return { ...state, id: action.payload };
     case "campaign_id":
       return { ...state, campaign_id: action.payload };
+    case "destination_type":
+      return { ...state, destination_type: action.payload };
     case "promoted_object":
       return { ...state, promoted_object: action.payload };
     case "is_dynamic_creative":
@@ -210,8 +212,15 @@ export function reducer(state, action) {
 }
 
 export const CONVERSIONS_EVENT = [
-  "RATE",
+  "PURCHASE",
+  "ADD_PAYMENT_INFO",
+  "ADD_TO_CART",
+  "INITIATE_CHECKOUT",
+  "COMPLETE_REGISTRATION",
+  "CONTENT_VIEW",
+  "ADD_TO_WISHLIST",
   "TUTORIAL_COMPLETION",
+  "RATE",
   "CONTACT",
   "CUSTOMIZE_PRODUCT",
   "DONATE",
@@ -220,14 +229,8 @@ export const CONVERSIONS_EVENT = [
   "START_TRIAL",
   "SUBMIT_APPLICATION",
   "SUBSCRIBE",
-  "ADD_TO_CART",
-  "ADD_TO_WISHLIST",
   "INITIATED_CHECKOUT",
-  "ADD_PAYMENT_INFO",
-  "PURCHASE",
   "LEAD",
-  "COMPLETE_REGISTRATION",
-  "CONTENT_VIEW",
   "SEARCH",
   "SERVICE_BOOKING_REQUEST",
   "MESSAGING_CONVERSATION_STARTED_7D",

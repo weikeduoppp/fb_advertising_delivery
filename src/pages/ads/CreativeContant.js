@@ -12,6 +12,10 @@ export const initail = {
     child_attachments 轮播
     video_data 单视频
     photo_data 单图片
+    slideshow_spec 幻灯片
+    batch_video_data 批量视频
+      batch_video_data_one 1对1
+      batch_video_data_more 1对多
     
     视频: object_story_spec：page_id，video_data {title, image_url, video_id, call_to_action, message}
 
@@ -71,12 +75,12 @@ export const initail = {
     // 主页id
     page_id: "",
     // link
-    instagram_actor_id:''
+    instagram_actor_id: ""
   },
   // 主页id
   page_id: "",
   // ins账户id
-  instagram_actor_id : "",
+  instagram_actor_id: "",
   // 应用的链接
   object_store_url: "",
   // 网站
@@ -86,6 +90,7 @@ export const initail = {
   // 视频的预览图
   image_url: "",
   message: "",
+  title: "",
   link: "",
   app_link: "",
   //  描述
@@ -97,7 +102,11 @@ export const initail = {
   caption: "",
   // 轮播自动排序
   multi_share_optimized: true,
-  status: 'ACTIVE'
+  status: "ACTIVE",
+  // 批量时一对多 . 组下多少个广告
+  ads_num: 1,
+  campaign_num: 1,
+  adset_num: 1
 };
 
 // reducer
@@ -109,6 +118,8 @@ export function reducer(state, action) {
       return { ...state, instagram_actor_id: action.payload };
     case "name":
       return { ...state, name: action.payload };
+    case "title":
+      return { ...state, title: action.payload };
     case "ads_name":
       return { ...state, ads_name: action.payload };
     case "format":
@@ -135,6 +146,14 @@ export function reducer(state, action) {
       return { ...state, call_to_action: action.payload };
     case "status":
       return { ...state, status: action.payload };
+    case "ads_num":
+      return { ...state, ads_num: action.payload };
+    case "adset_num":
+      return { ...state, adset_num: action.payload };
+    case "campaign_num":
+      return { ...state, campaign_num: action.payload };
+    case "title_message":
+      return { ...state, ...action.payload };
     case "reset":
       return { ...action.payload };
     default:
@@ -204,8 +223,8 @@ export function handleAdCreative(link, state) {
   let object_story_spec = {
     page_id: state.page_id
   };
-  if(state.instagram_actor_id) object_story_spec.instagram_actor_id =
-                                 state.instagram_actor_id;
+  if (state.instagram_actor_id)
+    object_story_spec.instagram_actor_id = state.instagram_actor_id;
   // 行动号召
   let call_to_action = state.call_to_action;
   // 应用安装时的深度链接
@@ -269,7 +288,7 @@ export function handleAdCreative(link, state) {
       );
       break;
 
-    // 视频广告 / 幻灯片
+    // 视频广告 / 幻灯片 / 批量视频
     default:
       object_story_spec.video_data = {
         image_url: state.image_url,

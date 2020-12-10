@@ -75,7 +75,10 @@ const state = {
     data: []
   },
   // 账户下关联的 Instagram 帐户
-  instagram_accounts_cache: null
+  instagram_accounts_cache: null,
+  // 批量上传视频的id
+  video_ids: []
+
 };
 
 export default {

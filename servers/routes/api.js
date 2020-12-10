@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Targeting = require("../db/models/targeting");
+const Details = require("../db/models/details");
 const request = require("../utils/api");
 // 应用信息
 const client_id = "2327900167245519";
@@ -56,6 +57,57 @@ router.post("/targeting", async (req, res) => {
       msg: e
     });
   }
+});
+
+// 获取服务器保存的正文模板
+router.get("/details", async (req, res) => {
+  try {
+    const data = await Details.find({
+      adaccount_id: req.query.adaccount_id
+    });
+    res.json({
+      status: 1,
+      data
+    });
+  } catch (e) {
+    res.json({
+      status: 0,
+      msg: e
+    });
+  }
+});
+
+// 保存正文模板
+router.post("/details", async (req, res) => {
+  let body = req.body;
+  try {
+    let data = await Details.findOne({
+      name: body.name,
+      adaccount_id: body.adaccount_id
+    });
+    // 空为 null
+    if (data) {
+      await Details.updateOne({ name: body.name }, body);
+      res.json({
+        status: 1,
+        msg: "更新成功"
+      });
+    } else {
+      const result = await Details.create(body);
+      res.json({
+        status: 1,
+        msg: "保存成功",
+        result
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.json({
+      status: 0,
+      msg: e
+    });
+  }
+  
 });
 
 // 获取长期访问口令  query:  accessToken

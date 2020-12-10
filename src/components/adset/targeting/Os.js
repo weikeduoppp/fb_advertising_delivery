@@ -59,7 +59,6 @@ const DevicePlatforms = React.memo(
     const [min, setMin] = useState(defaultMin);
     const [max, setMax] = useState(defaultMax);
 
-    console.log(OS, defaultOS, defaultMin, defaultMax);
     // 处理版本号数据
     function handleEditionData(data) {
       let arr = data.filter(item => plainOptions.indexOf(item.platform) !== -1);

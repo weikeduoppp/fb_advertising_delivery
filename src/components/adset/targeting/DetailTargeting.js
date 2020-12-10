@@ -429,7 +429,8 @@ const DetailTargeting = React.memo(
     }
 
     // 上传数据
-    function interestsChange(val) {
+    function interestsChange(val, label, extra) {
+      console.log(val, label, extra);
       interestsForm.current = val;
       handleDispatchData();
     }
@@ -490,6 +491,11 @@ const DetailTargeting = React.memo(
     const behaviorsProps = {
       allowClear: true,
       showSearch: true,
+      filterTreeNode(inputValue, treeNode) {
+        let title = treeNode.props.title;
+        title.indexOf(inputValue)
+        return title.indexOf(inputValue) !== -1;
+      },
       treeData: behaviorsData,
       value: behaviorsForm.current,
       onChange: behaviorsChange,
@@ -503,6 +509,11 @@ const DetailTargeting = React.memo(
     const interestsProps = {
       allowClear: true,
       showSearch: true,
+      filterTreeNode(inputValue, treeNode) {
+        let title = treeNode.props.title;
+        title.indexOf(inputValue);
+        return title.indexOf(inputValue) !== -1;
+      },
       treeData: interestsData,
       value: interestsForm.current,
       onChange: interestsChange,
@@ -516,6 +527,11 @@ const DetailTargeting = React.memo(
     const demographicsProps = {
       allowClear: true,
       showSearch: true,
+      filterTreeNode(inputValue, treeNode) {
+        let title = treeNode.props.title;
+        title.indexOf(inputValue);
+        return title.indexOf(inputValue) !== -1;
+      },
       treeData: demographicsData,
       value: demographicsForm.current,
       onChange: demographicsChange,
@@ -573,7 +589,9 @@ const DetailTargeting = React.memo(
           </Select>
         </div>
         <div>
-          <p>定位搜索(系统外的人口统计数据、兴趣和行为)</p>
+          <p>
+            定位搜索(系统外的人口统计数据、兴趣和行为, 如果这里选择了, 上面的人口统计数据、兴趣和行为则不要重复选择)
+          </p>
           <Select
             allowClear
             mode="multiple"
@@ -593,7 +611,7 @@ const DetailTargeting = React.memo(
         </div>
         <div className={style.targeting_optimization}>
           <Checkbox
-            defaultChecked={targeting_optimization !== "none"}
+            checked={targeting_optimization !== "none"}
             onChange={onChange}
           >
             扩展细分定位，有机会提升广告表现时，向更多用户推广。

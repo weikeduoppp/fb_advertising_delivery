@@ -44,6 +44,11 @@ export default ({ header, children, pathname = "/campaign" }) => {
               Ads
             </Link>
           </Menu.Item>
+          <Menu.Item key="/upload">
+            <Link to="/upload" className="nav-text">
+              批量上传视频
+            </Link>
+          </Menu.Item>
         </Menu>
       </Sider>
       <Layout style={{ marginLeft: 200 }}>

@@ -7,18 +7,19 @@ import style from "./index.less";
 import { Spin } from "antd";
 import Pages from "../common/Paging";
 import MultiplePicture from "./MultiplePicture";
+import FilterInput from "./FilterInput";
 
 // 选择图片 单张或者多张  handleChildAttachments: 图片更改时单独处理轮播图的文案 format: 广告形式  同时组合了分页器
 const Adimages = React.memo(
   ({
-    paging, 
-    setPaging, 
-    total, 
-    setTotal, 
-    defaultCurrent, 
-    setDefaultCurrent, 
-    loading, 
-    setLoading, 
+    paging,
+    setPaging,
+    total,
+    setTotal,
+    defaultCurrent,
+    setDefaultCurrent,
+    loading,
+    setLoading,
     adimages_cache,
     adimages,
     visible: bool,
@@ -31,7 +32,11 @@ const Adimages = React.memo(
     child_attachments,
     handlePhotoLine,
     format,
-    handleSlideshow
+    handleSlideshow,
+    filter,
+    setFilter,
+    shiftKey,
+    removeShiftKeydown
   }) => {
     // 拉取图片库
     const [options, setData] = useState([]);
@@ -39,7 +44,6 @@ const Adimages = React.memo(
     const [select, setSelect] = useState(images);
 
     const [childAttachments, setChildAttachments] = useState(child_attachments);
-
     // 赋值
     const setAll = useCallback(
       ({ data, total_count, pages }) => {
@@ -52,13 +56,16 @@ const Adimages = React.memo(
     );
 
     // 初始缓存
-    const initCache = useCallback((data, total_count, pages) => {
-      dispatch({
-        type: "global/set_adimages_cache",
-        payload: { data, total_count, pages }
-      });
-      dispatch({ type: "global/set_adimages", payload: [data] });
-    }, [dispatch]);
+    const initCache = useCallback(
+      (data, total_count, pages) => {
+        dispatch({
+          type: "global/set_adimages_cache",
+          payload: { data, total_count, pages }
+        });
+        dispatch({ type: "global/set_adimages", payload: [data] });
+      },
+      [dispatch]
+    );
 
     // 获取数据
     useEffect(() => {
@@ -83,7 +90,6 @@ const Adimages = React.memo(
       };
     }, [adaccount_id, adimages_cache, setAll, initCache]);
 
-
     // 刷新数据
     async function getAdimages() {
       const { data, total_count, paging: pages } = await api.getAdimages(
@@ -95,15 +101,15 @@ const Adimages = React.memo(
 
     // 下一页或者上一页   方向,页码(对应adimages数组格式)
     async function nextOrPrevious(direction, page) {
-      if (direction === 'before') {
-        if(page === 0) setPaging({...paging, before: false})
+      if (direction === "before") {
+        if (page === 0) setPaging({ ...paging, before: false });
         setData(adimages[page]);
       } else {
         if (adimages[page]) {
           setData(adimages[page]);
           setPaging({ ...paging, before: true });
         } else {
-          setLoading(true)
+          setLoading(true);
           // 没缓存的情况
           const { data, total_count, paging: pages } = await api.getAdimages(
             adaccount_id,
@@ -111,7 +117,7 @@ const Adimages = React.memo(
               [direction]: paging[direction]
             }
           );
-          setAll({data, total_count, pages});
+          setAll({ data, total_count, pages });
           dispatch({
             type: "global/set_adimages",
             payload: adimages.concat([data])
@@ -132,6 +138,14 @@ const Adimages = React.memo(
         });
       } else {
         setSelect(data => {
+          // shift选择
+          if (shiftKey === true && data.length > 0) {
+            let begin = options.findIndex(d => d.hash === data[0].hash);
+            let end = options.findIndex(d => d.hash === target.hash);
+            // 包括 begin，不包括end
+            return options.slice(begin, end+1)
+          }
+          // 正常依次选择
           let i = data.findIndex(d => d.hash === target.hash);
           if (i !== -1) {
             let arr = data.slice();
@@ -179,6 +193,8 @@ const Adimages = React.memo(
                 fetchData={getAdimages}
               />
             </span>
+            <FilterInput setFilter={setFilter} />
+
             {paging && (
               <Pages
                 className={style.paging_container}
@@ -196,6 +212,7 @@ const Adimages = React.memo(
         handle={async setConfirmLoading => {
           // ok
           dispatch({ type: "global/set_images", payload: select });
+          console.log(select);
           // 填充数据
           if (num > 1 && format === "child_attachments")
             handleChildAttachments(childAttachments);
@@ -208,12 +225,25 @@ const Adimages = React.memo(
         handleCancel={() => {
           // 取消
           setVisible(false);
+          // 移除监听
+          removeShiftKeydown()
         }}
       >
         <div className={style.image_container}>
           <div className={style.image_content}>
             {!loading && options.length ? (
-              <MultiplePicture options={options} toSelect={toSelect} select={select} num={num}/>
+              <MultiplePicture
+                options={
+                  filter
+                    ? options.filter(d => {
+                        return d?.name?.indexOf(filter) !== -1;
+                      })
+                    : options
+                }
+                toSelect={toSelect}
+                select={select}
+                num={num}
+              />
             ) : (
               <Spin size="small" />
             )}

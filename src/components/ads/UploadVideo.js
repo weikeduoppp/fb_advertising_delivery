@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect, fetch } from "dva";
 import { Upload, Button, Icon, message, notification, Spin } from "antd";
 import { version } from "../../utils/config";
+
 
 function videoUrl(adaccount_id) {
   return `https://graph-video.facebook.com/${version}/${adaccount_id}/advideos`;
@@ -11,12 +12,12 @@ const access_token = localStorage.getItem("access_token")
 function err(error) {
   notification.warning({
     message: "上传失败",
-    description: error,
+    description: error.message,
     duration: null
   });
 }
 
-// 封装fetch
+// 封装fetch  上线才能正式上传
 function request({id, body, success, fail}) {
   fetch(videoUrl(id), {
     method: "POST",
@@ -24,11 +25,17 @@ function request({id, body, success, fail}) {
   })
     .then(res => res.json())
     .then(res => {
+      if(res.error) { 
+        let error = res.error
+        fail && fail(error);
+        message.warning(error.message);
+        err(error);
+        return false;
+       }
       success && success(res);
     })
     .catch(error => {
-      fail && fail(error);
-      err(error);
+      console.log(error)
     });
 }
 
@@ -48,14 +55,34 @@ function request({id, body, success, fail}) {
 //   });
 // }
 
-// 上传素材库
-const UploadVideo = React.memo(({ adaccount_id, fetchData, dispatch }) => {
+// 上传素材库  record: 是否记录视频id
+const UploadVideo = React.memo(({record, adaccount_id, dispatch, clearIds, video_ids }) => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(null);
 
+  const [ids, setIds] = useState(JSON.parse(localStorage.getItem("video_ids")) || []);
+
+  // 监听ids
+  useEffect(() => {
+    if (ids?.length) {
+      dispatch({ type: "global/set_video_ids", payload: ids });
+      localStorage.setItem("video_ids", JSON.stringify(ids));
+    }
+  }, [ids, dispatch]);
+  
+  // 清除缓存 ids
+  useEffect(() => {
+    if(!video_ids?.length) setIds([])
+  }, [video_ids]);
+
+
+
   // 成功上传返回
-  function successUpload(res, file) {
-    if (res) {
+  function successUpload({ id }, file) {
+    if (id) {
+      if(record) {
+        setIds((_ids) => ([..._ids, { id, name: file.name }]))
+      }
       message.success(`${file.name} 上传成功`);
       setLoading(false);
       setTimer(
@@ -65,7 +92,7 @@ const UploadVideo = React.memo(({ adaccount_id, fetchData, dispatch }) => {
             type: "global/set_advideos_cache",
             payload: null
           });
-        }, 500)
+        }, 1500)
       );
     }
   }
@@ -84,6 +111,8 @@ const UploadVideo = React.memo(({ adaccount_id, fetchData, dispatch }) => {
       id: adaccount_id,
       body: formdata,
       success(res) {
+        
+        // {id: "643492452915501"}
         successUpload(res, file);
       }
     });
@@ -117,6 +146,7 @@ const UploadVideo = React.memo(({ adaccount_id, fetchData, dispatch }) => {
     upload_session_id,
     start_offset,
     end_offset,
+    video_id,
     chunk,
     file
   }) {
@@ -130,22 +160,25 @@ const UploadVideo = React.memo(({ adaccount_id, fetchData, dispatch }) => {
       id: adaccount_id,
       body: formdata,
       success(res) {
-        if (res.start_offset < res.end_offset) {
+        let [start, end] = [Number(res.start_offset), Number(res.end_offset)];
+        // 字符串比较大小会错误
+        if (start < end) {
           fetchUpload({
             ...res,
-            chunk: file.slice(res.start_offset, res.end_offset),
+            chunk: file.slice(start, end),
             upload_session_id,
+            video_id,
             file
           });
         } else {
-          uploadEnd({ upload_session_id, file });
+          uploadEnd({ upload_session_id, file, video_id });
         }
       }
     });
   }
 
   // 结束上传会话
-  function uploadEnd({ upload_session_id, file }) {
+  function uploadEnd({ upload_session_id, file, video_id }) {
     var formdata = new FormData();
     formdata.append("upload_phase", "finish");
     formdata.append("upload_session_id", upload_session_id);
@@ -156,7 +189,7 @@ const UploadVideo = React.memo(({ adaccount_id, fetchData, dispatch }) => {
       body: formdata,
       success(res) {
         console.log(res);
-        successUpload(res, file);
+        successUpload({ ...res, id: video_id }, file);
       }
     });
   }
@@ -165,7 +198,7 @@ const UploadVideo = React.memo(({ adaccount_id, fetchData, dispatch }) => {
     accept: "video/*",
     beforeUpload: file => {
       // 小于10M 简单上传
-      file.size > 10 * 1024 * 1024 ? MultipartUpload(file) : simpleUpload(file);
+      file.size > 5 * 1024 * 1024 ? MultipartUpload(file) : simpleUpload(file);
       return false;
     },
     multiple: true,

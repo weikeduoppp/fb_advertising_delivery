@@ -7,6 +7,7 @@ import { Spin } from "antd";
 import Pages from "../common/Paging";
 import MultiplePicture from "./MultiplePicture";
 import UploadVideo from './UploadVideo';
+import FilterInput from "./FilterInput";
 
 // 获取数组最后一项
 function lengthLastIndex(params) {
@@ -43,7 +44,9 @@ const Advideos = React.memo(
     dispatch,
     handleSubmit,
     handleDynamicVideos,
-    videos
+    videos,
+    filter,
+    setFilter
   }) => {
     // 拉取视频库
     const [options, setData] = useState([]);
@@ -78,7 +81,9 @@ const Advideos = React.memo(
     useEffect(() => {
       let ignore = false;
       async function fetchData() {
-        const { data, total_count, paging: pages } = await getAdvideos(adaccount_id);
+        const { data, total_count, paging: pages } = await getAdvideos(
+          adaccount_id
+        );
         if (!ignore) {
           setAll({ data, total_count, pages });
           initCache(data, total_count, pages);
@@ -93,18 +98,18 @@ const Advideos = React.memo(
         ignore = true;
       };
     }, [adaccount_id, advideos_cache, setAll, initCache]);
-
+    console.log(options)
     // 下一页或者上一页   方向,页码(对应advideos数组格式)
     async function nextOrPrevious(direction, page) {
-      if (direction === 'before') {
-        if(page === 0) setPaging({...paging, before: false})
+      if (direction === "before") {
+        if (page === 0) setPaging({ ...paging, before: false });
         setData(advideos[page]);
       } else {
         if (advideos[page]) {
           setData(advideos[page]);
           setPaging({ ...paging, before: true });
         } else {
-          setLoading(true)
+          setLoading(true);
           // 没缓存的情况
           const { data, total_count, paging: pages } = await getAdvideos(
             adaccount_id,
@@ -113,7 +118,7 @@ const Advideos = React.memo(
             }
           );
           let videos = data.map(handleDataMap);
-          setAll({data, total_count, pages});
+          setAll({ data, total_count, pages });
           dispatch({
             type: "global/set_advideos",
             payload: advideos.concat([videos])
@@ -122,14 +127,14 @@ const Advideos = React.memo(
       }
     }
 
-    // 获取新视频
-    async function reloadAdvideos() {
-      const { data, total_count, paging: pages } = await getAdvideos(
-        adaccount_id
-      );
-      setAll({ data, total_count, pages });
-      initCache(data, total_count, pages);
-    }
+    // 获取新视频 注意: 接口并不是实时更新
+    // async function reloadAdvideos() {
+    //   const { data, total_count, paging: pages } = await getAdvideos(
+    //     adaccount_id
+    //   );
+    //   setAll({ data, total_count, pages });
+    //   initCache(data, total_count, pages);
+    // }
 
     // 选中的视频
     function toSelect(target) {
@@ -162,12 +167,9 @@ const Advideos = React.memo(
           <div className={style.model_top}>
             <span>
               选择视频（{select.length}/{num}）
-              <UploadVideo
-                className={style.upload_btn}
-                fetchData={reloadAdvideos}
-                dispatch={dispatch}
-              />
+              <UploadVideo className={style.upload_btn} dispatch={dispatch} />
             </span>
+            <FilterInput setFilter={setFilter} />
             {paging && (
               <Pages
                 num={100}
@@ -200,7 +202,13 @@ const Advideos = React.memo(
           <div className={style.image_content}>
             {!loading && options.length ? (
               <MultiplePicture
-                options={options}
+                options={
+                  filter
+                    ? options.filter(d => {
+                        return d?.name?.indexOf(filter) !== -1;
+                      })
+                    : options
+                }
                 toSelect={toSelect}
                 select={select}
                 num={num}

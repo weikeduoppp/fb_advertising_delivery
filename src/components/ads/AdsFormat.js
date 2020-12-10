@@ -13,7 +13,9 @@ import { Radio } from "antd";
    { key: "photo_data", name: "单图片" },
    { key: "child_attachments", name: "轮播" },
    { key: "video_data", name: "单视频" },
-   { key: "slideshow_spec", name: "幻灯片" }
+   //  { key: "slideshow_spec", name: "幻灯片" },
+   { key: "batch_video_data_more", name: "批量视频-多对多" },
+   { key: "batch_image_data_more", name: "批量图片-多对多" }
  ];
 //  广告形式
 const AdsFormat = React.memo(({ handleSubmit, format, dispatch }) => {

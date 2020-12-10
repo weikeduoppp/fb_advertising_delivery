@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as api from "../../utils/fb_api";
+
 // 此函数接收一个组件...
 const WithPage = ({ WrappedComponent, method, adaccount_id }) => {
   // 系列数据
@@ -14,6 +15,7 @@ const WithPage = ({ WrappedComponent, method, adaccount_id }) => {
   const [total, setTotal] = useState(0);
   // 当前页数
   const [defaultCurrent, setDefaultCurrent] = useState(1);
+
   // model标识
   // 获取广告系列
   useEffect(() => {
@@ -71,6 +73,7 @@ const WithPage = ({ WrappedComponent, method, adaccount_id }) => {
   if (method !== "getCampaign") {
     document.onkeydown = null;
   }
+
 
   // ...并返回另一个组件...
   return (

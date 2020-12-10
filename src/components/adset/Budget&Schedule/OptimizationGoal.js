@@ -1,6 +1,7 @@
 import { Select } from "antd";
 import { memo } from "react";
 import style from "../index.less";
+import CustomEventType from "../promoted_object/CustomEventType";
 const { Option } = Select;
 
 // 广告投放优化目标数据
@@ -107,7 +108,13 @@ const BILLING_EVENT = {
 };
 
 export default memo(
-  ({ objective, optimization_goal, billing_event, handleSubmit }) => {
+  ({
+    objective,
+    optimization_goal,
+    billing_event,
+    handleSubmit,
+    handleEvent
+  }) => {
     return (
       <>
         <div className={style.targeting_con}>
@@ -141,6 +148,13 @@ export default memo(
               ))}
             </Select>
           </div>
+        )}
+        {optimization_goal === "OFFSITE_CONVERSIONS" && (
+          <CustomEventType
+            onChange={val => {
+              handleEvent(val);
+            }}
+          />
         )}
       </>
     );

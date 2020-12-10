@@ -4,8 +4,7 @@ const path = require("path");
 export default {
   // 打包线上 hash 模式
   base: "/",
-  publicPath:
-    "/",
+  publicPath: "/",
   hash: true,
   history: "hash",
   treeShaking: true,
@@ -16,12 +15,13 @@ export default {
       routes: [
         {
           path: "/",
-          redirect: "/campaign",
+          redirect: "/campaign"
         },
         { path: "/campaign", component: "./campaign/campaignManagement" },
         { path: "/adset", component: "./adset/adsetManagement" },
         { path: "/ad", component: "./ads/adsManagement" },
-        { path: "/creation", component: "./creation/index" }
+        { path: "/creation", component: "./creation/index" },
+        { path: "/upload", component: "./uploadModel/upload" }
       ]
     }
   ],

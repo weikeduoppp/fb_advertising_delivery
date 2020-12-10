@@ -11,10 +11,33 @@
 .upload_btn {
   margin-left: 20px;
 }
+.image_container {
+  height: 650px;
+  overflow: scroll;
+}
+.image_container::-webkit-scrollbar {
+  width: 0 !important;
+}
+.image_container {
+  overflow: -moz-scrollbars-none;
+}
+.image_container {
+  -ms-overflow-style: none;
+}
+.unselect {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -ms-user-select: none;
 
+  /* 以下两个属性目前并未支持，写在这里为了减少风险 */
+  -o-user-select: none;
+  user-select: none;
+}
 .image_content {
   display: flex;
   flex-wrap: wrap;
+  .unselect();
 }
 
 .item_container {
@@ -63,9 +86,9 @@
 .item_img {
   width: 96px;
   height: 96px;
-  background-size:contain;
+  background-size: contain;
   background-position: center;
-  background-repeat:no-repeat;
+  background-repeat: no-repeat;
 }
 
 .item_img_number {
@@ -93,7 +116,7 @@
 .childAttachments_con {
   background: #f5f7f8;
   border: 1px solid;
-  border-color: #EBEDF0 #DEE3E8 #c6c9cc;
+  border-color: #ebedf0 #dee3e8 #c6c9cc;
   padding: 0 30px 30px 30px;
 }
 
@@ -137,7 +160,7 @@
   position: relative;
   &:before {
     position: absolute;
-    content: '';
+    content: "";
     top: -10px;
     left: -10px;
     bottom: -10px;
@@ -151,4 +174,23 @@
 
 .DynamicDetail_title {
   margin-bottom: 0;
+}
+.details_container {
+  display: flex;
+  .detail_item {
+    flex: 1;
+  }
+}
+
+.targeting_label {
+  margin-right: 20px;
+}
+
+
+.other_ads_num {
+  margin-top: 15px;
+}
+.other_ads_num_input {
+  width: 100px;
+  margin-left: 15px;
 }

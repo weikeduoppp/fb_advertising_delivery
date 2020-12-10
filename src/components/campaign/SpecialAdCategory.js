@@ -23,7 +23,7 @@ const options = [
   }
 ];
 
-export default memo(({ special_ad_category, handleSubmit }) => {
+export default memo(({ special_ad_categories, handleSubmit }) => {
   return (
     <>
       <div className={style.targeting_con}>
@@ -31,8 +31,8 @@ export default memo(({ special_ad_category, handleSubmit }) => {
         <Select
           style={{ width: "30%" }}
           placeholder="特殊广告类别"
-          defaultValue={special_ad_category || undefined}
-          onChange={val => handleSubmit(val)}
+          defaultValue={undefined}
+          onChange={val => handleSubmit(JSON.stringify([val]))}
         >
           {options &&
             options.map((d, i) => <Option key={d.key}>{d.name}</Option>)}

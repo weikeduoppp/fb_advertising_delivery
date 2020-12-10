@@ -261,6 +261,12 @@ export default ({
           objective={objective}
           optimization_goal={state.optimization_goal}
           billing_event={state.billing_event}
+          handleEvent={custom_event_type => {
+            dispatch({
+              type: "promoted_object",
+              payload: { ...state.promoted_object, custom_event_type }
+            });
+          }}
           handleSubmit={(optimization_goal, billing_event) => {
             dispatch({
               type: "optimization_goal",
@@ -270,6 +276,16 @@ export default ({
               type: "billing_event",
               payload: billing_event
             });
+            // 处理 optimization_goal === "VALUE"
+            if(optimization_goal === "VALUE") {
+              dispatch({
+                type: "promoted_object",
+                payload: {
+                  ...state.promoted_object,
+                  custom_event_type: "PURCHASE"
+                }
+              });
+            }
           }}
         />
         <CostControl
@@ -291,12 +307,8 @@ export default ({
               payload: bid_strategy
             })
           }
-          handleBudget={daily_budget =>
-            dispatch({
-              type: "daily_budget",
-              payload: daily_budget
-            })
-          }
+          state={state}
+          dispatch={dispatch}
         />
         <Schedule
           end_time={state.end_time}

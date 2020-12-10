@@ -50,7 +50,7 @@ class FbReportTool extends Component {
             message.info("已成功登录");
             localStorage.setItem("access_token", accessToken);
 
-            this.getLongToken(accessToken);
+            // this.getLongToken(accessToken);
             // 获取用户信息
             this.getUser();
             this.getNewAdaccounts();
@@ -58,7 +58,7 @@ class FbReportTool extends Component {
             message.info("请您先登录facebook");
           }
         },
-        { scope: "ads_read,ads_management,manage_pages,instagram_basic" }
+        { scope: "ads_read,ads_management,pages_manage_ads,instagram_basic" }
       );
     } else {
       // 获取用户信息
@@ -70,7 +70,7 @@ class FbReportTool extends Component {
     }
   }
 
-  // 获取长期口令
+  // 获取长期口令 测试ok. 线上不行.
   getLongToken(accessToken) {
     request({
       url: `${host}/api/token`,

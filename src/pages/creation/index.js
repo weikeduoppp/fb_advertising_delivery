@@ -12,19 +12,19 @@ const CreateCampaign = lazy(() => import("./createCampaign"));
 const CreateAds = lazy(() => import("./createAds"));
 const { TabPane } = Tabs;
 // 顶层作数据管理
-const Creation = ({ adaccount_id, dispatch }) => {
+const Creation = ({ adaccount_id, dispatch, c_campaign, c_adset }) => {
   // 创建状态
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState("campaign");
-  // 系列的数据
+  // 系列的数据 优先使用缓存
   const [campaignState, campaignDispatch] = useReducer(
     campaignConstant.reducer,
-    campaignConstant.initail
+    c_campaign || campaignConstant.initail
   );
   // 组的数据
   const [adsetState, adsetDispatch] = useReducer(
     adsetConstant.reducer,
-    adsetConstant.initail[campaignState.objective]
+    c_adset || adsetConstant.initail[campaignState.objective]
   );
 
   // 广告创意的数据
@@ -41,6 +41,7 @@ const Creation = ({ adaccount_id, dispatch }) => {
 
   // 保存系列数据
   function setCampaign() {
+    console.log(campaignState);
     dispatch({
       type: "global/set_c_campaign",
       payload: campaignState
@@ -48,6 +49,7 @@ const Creation = ({ adaccount_id, dispatch }) => {
   }
   // 保存组数据
   function setAdset() {
+    console.log(adsetState);
     dispatch({
       type: "global/set_c_adset",
       payload: adsetState
@@ -56,11 +58,20 @@ const Creation = ({ adaccount_id, dispatch }) => {
 
   // 关闭键盘事件
   useEffect(() => {
-    if(document.onkeydown) document.onkeydown = null
+    if (document.onkeydown) document.onkeydown = null;
     return () => {
       document.onkeydown = null;
     };
   }, []);
+
+  // 目标修改了 重置adsetState
+  useEffect(() => {
+    adsetDispatch({
+      type: "reset",
+      payload: c_adset || adsetConstant.initail[campaignState.objective]
+    });
+    return () => {};
+  }, [campaignState.objective, c_adset, adsCreativeDispatch]);
 
   return (
     <Spin tip="努力创建中..." spinning={loading} size="large" delay={500}>
@@ -105,7 +116,9 @@ const Creation = ({ adaccount_id, dispatch }) => {
             <CreateAdset
               campaign_id={campaignState.id}
               bid_strategy={campaignState.bid_strategy}
-              daily_budget={campaignState.daily_budget}
+              daily_budget={
+                campaignState.daily_budget || campaignState.lifetime_budget
+              }
               state={adsetState}
               dispatch={adsetDispatch}
               initailState={adsetConstant.initail[campaignState.objective]}
@@ -115,6 +128,13 @@ const Creation = ({ adaccount_id, dispatch }) => {
               <Button
                 type="primary"
                 onClick={() => {
+                  if (
+                    !adsetState?.targeting?.geo_locations?.countries.length &&
+                    !adsetState?.targeting?.geo_locations?.country_groups.length
+                  )
+                    return message.warning("请选择国家/区域");
+                  if (!adsetState.optimization_goal)
+                    return message.warning("请选择广告投放优化目标");
                   // 下一步 创建广告
                   if (adsetState.name) {
                     setStep("ads");
@@ -132,8 +152,16 @@ const Creation = ({ adaccount_id, dispatch }) => {
         <TabPane tab="广告" key="ads">
           <Suspense fallback={<Spin size="small" />}>
             <CreateAds
-              state={adsetState.is_dynamic_creative ? dynamicCreativeState : adsCreativeState}
-              dispatch={adsetState.is_dynamic_creative ? dynamicCreativeDispatch : adsCreativeDispatch}
+              state={
+                adsetState.is_dynamic_creative
+                  ? dynamicCreativeState
+                  : adsCreativeState
+              }
+              dispatch={
+                adsetState.is_dynamic_creative
+                  ? dynamicCreativeDispatch
+                  : adsCreativeDispatch
+              }
               objective={campaignState.objective}
               is_dynamic_creative={adsetState.is_dynamic_creative}
             />
@@ -143,7 +171,11 @@ const Creation = ({ adaccount_id, dispatch }) => {
                 adaccount_id={adaccount_id}
                 campaignState={campaignState}
                 adsetState={adsetState}
-                adsCreativeState={adsetState.is_dynamic_creative ? dynamicCreativeState : adsCreativeState}
+                adsCreativeState={
+                  adsetState.is_dynamic_creative
+                    ? dynamicCreativeState
+                    : adsCreativeState
+                }
               />
             </div>
           </Suspense>
@@ -153,9 +185,11 @@ const Creation = ({ adaccount_id, dispatch }) => {
   );
 };
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
-    adaccount_id: state.global.adaccount_id
+    adaccount_id: state.global.adaccount_id,
+    c_campaign: state.global.c_campaign,
+    c_adset: state.global.c_adset
   };
 };
 

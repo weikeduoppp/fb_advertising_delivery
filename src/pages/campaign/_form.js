@@ -3,6 +3,7 @@ import style from "./index.less";
 import * as constant from "./constant";
 import Status from "components/common/Status";
 import SpecialAdCategory from "components/campaign/SpecialAdCategory.js";
+import Budget from "components/campaign/Budget.js";
 // 系列表单
 export default ({ state, dispatch }) => {
   return (
@@ -35,19 +36,8 @@ export default ({ state, dispatch }) => {
           </Radio.Group>
         </div>
       )}
+      <Budget state={state} dispatch={dispatch} />
 
-      <div>
-        <p>系列预算</p>
-        <Input
-          placeholder="输入金额"
-          type="number"
-          name="daily_budget"
-          value={state.daily_budget}
-          onChange={e => {
-            dispatch({ type: "daily_budget", payload: e.target.value });
-          }}
-        />
-      </div>
       <div>
         <p>竟价策略(若开启广告系列预算优化, 默认最低费用)</p>
         <Radio.Group
@@ -64,11 +54,11 @@ export default ({ state, dispatch }) => {
         </Radio.Group>
       </div>
       <SpecialAdCategory
-        special_ad_category={state.special_ad_category}
-        handleSubmit={special_ad_category =>
+        special_ad_categories={state.special_ad_categories}
+        handleSubmit={special_ad_categories =>
           dispatch({
-            type: "special_ad_category",
-            payload: special_ad_category
+            type: "special_ad_categories",
+            payload: special_ad_categories
           })
         }
       />

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Select } from "antd";
 import { getPixelId } from "utils/fb_api";
 import style from "./index.less";
-import { CONVERSIONS_EVENT } from "../../../pages/adset/constant";
 import { connect } from 'dva'
-const { Option } = Select;
+import CustomEventType from './CustomEventType'
 
 // 根据系列选择的目标 展示不同内容
 const Conversions = React.memo(({ pixcel_id, dispatch, adaccount_id, handleSubmit }) => {
@@ -53,21 +51,7 @@ const Conversions = React.memo(({ pixcel_id, dispatch, adaccount_id, handleSubmi
           </a>
         )}
       </div>
-      {pixcel && (
-        <div className={style.targeting_con}>
-          <span className={style.targeting_label}>Conversion Event</span>
-          <Select
-            style={{ width: "40%" }}
-            placeholder="选择事件"
-            defaultValue={[]}
-            onChange={onChange}
-          >
-            {CONVERSIONS_EVENT.map((d, i) => (
-              <Option key={d}>{d}</Option>
-            ))}
-          </Select>
-        </div>
-      )}
+      {pixcel && <CustomEventType onChange={onChange} />}
     </>
   );
 });

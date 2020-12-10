@@ -40,14 +40,15 @@ git clone git@gitlab.corp.youdao.com:yewq/fb_advertising_delivery.git
 # 安装依赖
 yarn
 
-# 启动项目
-pm2 startOrRestart ecosystem.config.js --env production
+# 启动项目 指定HOME 位置(zj231)
+PM2_HOME='/disk1/eadop/.fb_advertising_delivery' pm2 startOrRestart ecosystem.config.js --env production
 ```
 
 由于umi某原因. 打包的代码是直接git上./dist.
 
 注意: 因为添了servers, commit 校验不通过了. 故commit 不作校验;
 ```bash
+# eg
 git commit -m '' --no-verify
 ```
 [相关文档 && 开发文档](https://www.yuque.com/docs/share/f3c88c62-a7a7-468e-8e81-e89271f25258#)

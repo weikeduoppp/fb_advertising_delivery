@@ -16,10 +16,12 @@
     "dva": "^2.6.0-beta.6",
     "express": "^4.17.1",
     "file-system": "^2.2.2",
+    "lodash": "^4.17.19",
     "mongoose": "^5.9.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-highlight-words": "^0.16.0"
+    "react-highlight-words": "^0.16.0",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",

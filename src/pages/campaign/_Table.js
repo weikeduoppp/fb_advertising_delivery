@@ -22,7 +22,7 @@ const TableComponent = memo(
     adset_select,
     setCopyModel,
     adaccount_id,
-    copied_id
+    copied_id,
   }) => {
     // 跨账户复制的数据
     const [copyData, setCopyData] = useState(null);
@@ -43,7 +43,6 @@ const TableComponent = memo(
     const [campaign_id, setCampaignId] = useState(null);
     const [initailState, setInitailState] = useState(null);
 
-
     // 进入编辑
     function toEdit(record) {
       setCampaignId(record.id);
@@ -52,8 +51,9 @@ const TableComponent = memo(
         status: record.status,
         name: record.name,
         daily_budget: record.daily_budget && record.daily_budget / 100,
+        lifetime_budget: record.lifetime_budget && record.lifetime_budget / 100,
         bid_strategy: record.bid_strategy,
-        special_ad_category: record.special_ad_category
+        special_ad_categories: JSON.stringify(record.special_ad_categories),
       });
       setVisible(true);
     }
@@ -61,12 +61,12 @@ const TableComponent = memo(
     // 监听copied_id, 复制完后编辑
     useEffect(() => {
       if (copied_id) {
-        let record = data.find(d => d.id === copied_id);
+        let record = data.find((d) => d.id === copied_id);
         toEdit(record);
         // 清空
         dispatch({
           type: "global/set_copied_id",
-          payload: ''
+          payload: "",
         });
       }
       return () => {};
@@ -80,25 +80,25 @@ const TableComponent = memo(
         render: (text, record) => (
           <span
             className={style._a}
-            onClick={e => {
+            onClick={(e) => {
               dispatch({ type: "global/set_campaigns", payload: [record] });
               router.push("/adset");
             }}
           >
             {text}
           </span>
-        )
+        ),
       },
       {
         title: "营销目标",
         dataIndex: "objective",
-        render: (text, record) => <span>{text}</span>
+        render: (text, record) => <span>{text}</span>,
       },
       {
         title: "投放状态",
         dataIndex: "status",
         sorter: (a, b) => a.status.toString().localeCompare(b.status),
-        render: text => text
+        render: (text) => text,
       },
       {
         title: "操作",
@@ -108,7 +108,7 @@ const TableComponent = memo(
           <span>
             <span
               className={style._a}
-              onClick={e => {
+              onClick={(e) => {
                 // 编辑 初始化数据
                 toEdit(record);
               }}
@@ -118,10 +118,10 @@ const TableComponent = memo(
             <Divider type="vertical" />
             <span
               className={style._a}
-              onClick={e => {
+              onClick={(e) => {
                 dispatch({
                   type: "global/set_campaigns",
-                  payload: [record]
+                  payload: [record],
                 });
                 setCopyModel(true);
               }}
@@ -129,8 +129,8 @@ const TableComponent = memo(
               复制
             </span>
           </span>
-        )
-      }
+        ),
+      },
     ];
     // 表格参数
     const params = {
@@ -146,24 +146,24 @@ const TableComponent = memo(
           // 如果选中的广告组不在系列中 清除广告组
           let adset = adset_select.slice();
           adset.filter(
-            item => row.findIndex(d => d.id === item.campaign_id) !== -1
+            (item) => row.findIndex((d) => d.id === item.campaign_id) !== -1
           );
           dispatch({ type: "global/set_adsets", payload: adset });
         },
         // 指定选中的行
-        selectedRowKeys: selectKeys
+        selectedRowKeys: selectKeys,
       },
       pagination: {
         defaultPageSize: 200,
-        showQuickJumper: true
+        showQuickJumper: true,
       },
-      scroll: data.length > 20 ? { y: "calc(100vh - 343px)" } : undefined
+      scroll: data.length > 20 ? { y: "calc(100vh - 343px)" } : undefined,
     };
 
     // 跨账户复制-获取复制源信息
     async function getCopyInfo() {
       let res = await api.getCopyInfo(selectKeys);
-      setCopyData(res.map(d => JSON.parse(d.body)));
+      setCopyData(res.map((d) => JSON.parse(d.body)));
       message.success("已复制完, 可以更换账号后粘贴");
     }
 
@@ -203,7 +203,7 @@ const TableComponent = memo(
         // 轮播
         if (link_data.child_attachments) {
           object_story_spec.link_data.child_attachments = link_data.child_attachments.map(
-            async item => {
+            async (item) => {
               let image_hash = link_data.image_hash;
               // 复制的图片源
               let { data } = await api.getImages(prevId, [image_hash]);
@@ -249,7 +249,7 @@ const TableComponent = memo(
         }
       }
       return {
-        object_story_spec: filterParams(object_story_spec)
+        object_story_spec: filterParams(object_story_spec),
       };
     }
 
@@ -267,7 +267,7 @@ const TableComponent = memo(
         ad_formats: [format],
         link_urls: [links],
         images,
-        videos
+        videos,
       } = asset_feed_spec;
 
       // 更换应用链接
@@ -280,25 +280,25 @@ const TableComponent = memo(
       if (format === "SINGLE_IMAGE" && images) {
         const { data } = await api.getImages(
           prevId,
-          images.map(d => d.hash)
+          images.map((d) => d.hash)
         );
         asset_feed_spec = {
           ...asset_feed_spec,
-          images: data.map(d => ({ url: d.permalink_url }))
+          images: data.map((d) => ({ url: d.permalink_url })),
         };
       } else if (format === "SINGLE_VIDEO" && videos) {
         asset_feed_spec = {
           ...asset_feed_spec,
-          videos: videos.map(d => ({
+          videos: videos.map((d) => ({
             video_id: d.video_id,
-            thumbnail_url: d.thumbnail_url
-          }))
+            thumbnail_url: d.thumbnail_url,
+          })),
         };
       }
 
       return {
         object_story_spec: filterParams(object_story_spec),
-        asset_feed_spec
+        asset_feed_spec,
       };
     }
 
@@ -312,7 +312,7 @@ const TableComponent = memo(
           // 默认投放状态为关闭
           let campaign_id = await createCampaign({
             ...campaginState,
-            status: "PAUSED"
+            status: "PAUSED",
           });
           if (adsets) {
             let adsetGroup = adsets.data;
@@ -332,7 +332,7 @@ const TableComponent = memo(
                 let is_dynamic_creative = adsetGroup[i].is_dynamic_creative;
                 if (ads) {
                   let adsGroup = ads.data;
-                  adsGroup.forEach(async item => {
+                  adsGroup.forEach(async (item) => {
                     let {
                       id,
                       creative: { id: creative_id, ...creativeState },
@@ -353,7 +353,7 @@ const TableComponent = memo(
                     let ads_id = await createAds({
                       ...adsState,
                       creative: creativeState,
-                      adset_id
+                      adset_id,
                     });
                     console.log(ads_id);
                   });
@@ -362,8 +362,8 @@ const TableComponent = memo(
                 // 一些广告组复制失败
                 notification.error({
                   message: "复制失败",
-                  description: `${adsetGroup[i].name}广告组复制失败 info: ${body.error.message}`,
-                  duration: null
+                  description: `${adsetGroup[i].name}广告组复制失败 info: ${body.error.error_user_msg}`,
+                  duration: null,
                 });
               }
             });
@@ -379,12 +379,12 @@ const TableComponent = memo(
     }
 
     // 检验要复制的是否有应用安装类型
-    function checkObjective() {
-      return copyData.filter(item => {
-        let { id, adsets, ...campaginState } = item;
-        return campaginState.objective === "APP_INSTALLS";
-      }).length;
-    }
+    // function checkObjective() {
+    //   return copyData.filter((item) => {
+    //     let { id, adsets, ...campaginState } = item;
+    //     return campaginState.objective === "APP_INSTALLS";
+    //   }).length;
+    // }
 
     // 监听键盘的 事件
     function handleKeyDown(e) {
@@ -404,12 +404,7 @@ const TableComponent = memo(
           return message.success(
             "不能粘贴, 处于复制中, 没有复制源或者同一账户下"
           );
-        if (checkObjective()) {
-          setAppModel(true);
-        } else {
-          setCopyLoading(true);
-          toCreate();
-        }
+        setAppModel(true);
       }
     }
     if (!visible) {
@@ -423,7 +418,7 @@ const TableComponent = memo(
         <Table
           params={params}
           dataSource={data.filter(
-            item => CampaignContant.objective.indexOf(item.objective) !== -1
+            (item) => CampaignContant.objective.indexOf(item.objective) !== -1
           )}
           columns={columns}
           loading={loading}
@@ -447,16 +442,14 @@ const TableComponent = memo(
             visible={appModel}
             setVisible={setAppModel}
             title={"更换应用/主页/ins"}
-            toCreate={setConfirmLoading => {
-              if (app) {
-                // 创建
-                setConfirmLoading(false);
-                setAppModel(false);
-                setCopyLoading(true);
-                toCreate();
-              }
+            toCreate={(setConfirmLoading) => {
+              // 创建 不管有没有应用
+              setConfirmLoading(false);
+              setAppModel(false);
+              setCopyLoading(true);
+              toCreate();
             }}
-            handleSubmit={val => setApp(val)}
+            handleSubmit={(val) => setApp(val)}
             handlePages={(id, key) => {
               key === "page_id" && setPage_id(id);
               key === "instagram_actor_id" && setInstagram_actor_id(id);
@@ -470,13 +463,13 @@ const TableComponent = memo(
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    selectKeys: state.global.campaigns.map(item => item.key),
+    selectKeys: state.global.campaigns.map((item) => item.key),
     // 已选中的广告组
     adset_select: state.global.adsets,
     // 广告账户id
     adaccount_id: state.global.adaccount_id,
     // 复制后要编辑的id
-    copied_id: state.global.copied_id
+    copied_id: state.global.copied_id,
   };
 };
 

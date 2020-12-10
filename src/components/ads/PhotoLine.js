@@ -6,7 +6,7 @@ import ImageStyle from "./index.less";
 import Adimages from "components/ads/Adimages";
 import WithPaing from "../HOC/withPaing";
 // 单张图片
-const PhotoLine = React.memo(({ images, handleSubmit, format }) => {
+const PhotoLine = React.memo(({ images, handleSubmit, format, num = 1 }) => {
   // 选择图片
   const [adImagesCon, setAdImagesCon] = useState(false);
   return (
@@ -22,7 +22,7 @@ const PhotoLine = React.memo(({ images, handleSubmit, format }) => {
       <div className={ImageStyle.select_container}>
         {/* 图片 */}
         {images.length > 0 && (
-          <div className={ImageStyle.image_container}>
+          <div >
             <div className={ImageStyle.image_content}>
               {images.map(item => (
                 <div key={item.hash} className={ImageStyle.item_container}>
@@ -51,6 +51,7 @@ const PhotoLine = React.memo(({ images, handleSubmit, format }) => {
           visible={adImagesCon}
           setVisible={setAdImagesCon}
           format={format}
+          num={num}
         />
       )}
     </>

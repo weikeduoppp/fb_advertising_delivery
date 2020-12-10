@@ -18,7 +18,7 @@ function getBase64(file) {
 }
 
 // 上传素材库
-const UploadImageCon = React.memo(({ adaccount_id, fetchData }) => {
+const UploadImageCon = React.memo(({ text = '上传',  adaccount_id, fetchData, setImg_urls }) => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(null);
   const handleUpload = async file => {
@@ -29,10 +29,16 @@ const UploadImageCon = React.memo(({ adaccount_id, fetchData }) => {
     const res = await UploadImage(adaccount_id, base64, file.name);
 
     if (res.images) {
+      console.log(res.images)
+      // res.images
+      setImg_urls && setImg_urls((urls) => ([...urls, {
+        url: res.images[file.name]?.url,
+        name: file.name
+      }]))
       message.success(`${file.name} 上传成功`);
       setTimer(setTimeout(() => {
         setLoading(false);
-        fetchData();
+        fetchData && fetchData();
       }, 500));
     }
   };
@@ -52,7 +58,7 @@ const UploadImageCon = React.memo(({ adaccount_id, fetchData }) => {
       <Spin spinning={loading} delay={500}>
         <Upload {...props}>
           <Button>
-            <Icon type="upload" /> 上传
+            <Icon type="upload" /> {text}
           </Button>
         </Upload>
       </Spin>

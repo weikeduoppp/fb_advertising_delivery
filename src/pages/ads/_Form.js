@@ -14,6 +14,8 @@ import ChildAttachments from "components/ads/ChildAttachments";
 import Detail from "components/ads/Detail";
 import CallToAction from "components/ads/CallToAction";
 import Status from "components/common/Status";
+import GetOrSaveDetails from "components/ads/GetOrSaveDetails";
+import AdsNums from "components/ads/AdsNums";
 
 import * as CampaignContant from "../campaign/constant";
 /* 
@@ -22,8 +24,6 @@ import * as CampaignContant from "../campaign/constant";
  */
 export default React.memo(
   ({ state, dispatch, objective, is_dynamic_creative }) => {
-    // 选择图片
-    // const [adImagesCon, setAdImagesCon] = useState(false);
     return (
       <div className={style.form}>
         <div>
@@ -96,6 +96,28 @@ export default React.memo(
                     }
                   />
                 )}
+                {state.format.indexOf("batch_image_data") !== -1 && (
+                  <PhotoLine format={state.format} num={150} />
+                )}
+                {state.format.indexOf("more") !== -1 && (
+                  <AdsNums state={state} dispatch={dispatch}/>
+                )}
+                {/* 正文模板 */}
+                <GetOrSaveDetails
+                  handleSubmit={payload => {
+                    dispatch({
+                      type: "title_message",
+                      payload: { ...payload, name: payload.title }
+                    });
+                  }}
+                  model="details"
+                  text="正文模板"
+                  params={{
+                    title: state.name || state.title,
+                    message: state.message
+                  }}
+                  params_name="title"
+                />
                 <Detail
                   {...state}
                   format={state.format}

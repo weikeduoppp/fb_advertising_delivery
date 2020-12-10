@@ -10,7 +10,7 @@ const Detail = React.memo(({ format, dispatch, objective, ...state }) => {
         <p>正文</p>
         <Input.TextArea
           rows={3}
-          defaultValue={state.message}
+          value={state.message}
           placeholder="向大家介绍广告内容"
           onChange={e => {
             dispatch({ type: "message", payload: e.target.value });
@@ -22,7 +22,7 @@ const Detail = React.memo(({ format, dispatch, objective, ...state }) => {
           <p>广告标题（非必填）</p>
           <Input
             placeholder="输入简短标题"
-            defaultValue={state.name || state.title}
+            value={state.name || state.title}
             onChange={e => {
               dispatch({ type: "name", payload: e.target.value });
             }}
