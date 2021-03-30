@@ -41,15 +41,15 @@ module.exports = {
       host: ["47.104.88.94"],
       // 默认22
       // port: "",
-      ref: "origin/dev",
-      repo: "git@gitlab.corp.youdao.com:yewq/fb_advertising_delivery.git",
+      ref: "origin/master",
+      repo: "git@github.com:weikeduoppp/fb_advertising_delivery.git",
       path: "/www/fb/production", // 部署到服务器的目录 -> 根目录
       ssh_options: ["StrictHostKeyChecking=no", "PasswordAuthentication=no"],
       // 发布脚本  (部署到服务后, 服务器会执行的script)
       "post-deploy": "pm2 startOrRestart ecosystem.config.js --env test",
       // Environment variables that must be injected in all applications on this env
       env: {
-        NODE_ENV: "production"
+        NODE_ENV: "test"
       }
     }
   }
