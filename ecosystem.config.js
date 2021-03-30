@@ -46,7 +46,7 @@ module.exports = {
       path: "/www/fb/production", // 部署到服务器的目录 -> 根目录
       ssh_options: ["StrictHostKeyChecking=no", "PasswordAuthentication=no"],
       // 发布脚本  (部署到服务后, 服务器会执行的script)
-      "post-deploy": "pm2 startOrRestart ecosystem.config.js --env test",
+      "post-deploy": "yarn && pm2 startOrRestart ecosystem.config.js --env test",
       // Environment variables that must be injected in all applications on this env
       env: {
         NODE_ENV: "test"
