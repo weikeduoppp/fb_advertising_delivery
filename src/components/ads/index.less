@@ -12,16 +12,19 @@
   margin-left: 20px;
 }
 .image_container {
+  overflow: scroll;
+}
+.image_container_scroll {
   height: 650px;
   overflow: scroll;
 }
-.image_container::-webkit-scrollbar {
+.image_container::-webkit-scrollbar, .image_container_scroll::-webkit-scrollbar {
   width: 0 !important;
 }
-.image_container {
+.image_container, .image_container_scroll {
   overflow: -moz-scrollbars-none;
 }
-.image_container {
+.image_container, .image_container_scroll {
   -ms-overflow-style: none;
 }
 .unselect {

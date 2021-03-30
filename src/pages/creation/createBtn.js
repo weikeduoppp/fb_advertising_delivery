@@ -124,31 +124,31 @@ const createBtn = React.memo(
       _data: 切割成以一个广告组的广告数(ads_num)为底的数组
      */
     function AdsTree(campaign_num, adset_num, ads_num, data) {
-     let _data = data.slice();
-     let campagin = [];
-     for (let i = 0; i < campaign_num; i++) {
-       // 代表一个系列
-       let campagin_children = {};
-       campagin_children.adset = [];
-       for (let j = 0; j < adset_num; j++) {
-         // 代表一个广告组
-         let adset_children = {};
-         let ads = _data.shift();
-         adset_children.ads = ads;
-         campagin_children.adset.push(adset_children);
-       }
-       campagin.push(campagin_children);
-     }
-     // campagin = [
-     //   {
-     //     adset: [
-     //       {
-     //         ads: []
-     //       }
-     //     ]
-     //   }
-     // ];
-     return campagin;
+      let _data = data.slice();
+      let campagin = [];
+      for (let i = 0; i < campaign_num; i++) {
+        // 代表一个系列
+        let campagin_children = {};
+        campagin_children.adset = [];
+        for (let j = 0; j < adset_num; j++) {
+          // 代表一个广告组
+          let adset_children = {};
+          let ads = _data.shift();
+          adset_children.ads = ads;
+          campagin_children.adset.push(adset_children);
+        }
+        campagin.push(campagin_children);
+      }
+      // campagin = [
+      //   {
+      //     adset: [
+      //       {
+      //         ads: []
+      //       }
+      //     ]
+      //   }
+      // ];
+      return campagin;
     }
 
     // 批量视频广告
@@ -163,35 +163,35 @@ const createBtn = React.memo(
       );
       // 切割数组
       try {
-       await Promise.all(
-         campaign.map(async ({ adset }, j) => {
-           // 多个广告系列处理
-           let campagin_id = campaignState.id
-             ? campaignState.id
-             : await createCampaign(j);
-           await Promise.all(
-             adset.map(async ({ ads }, i) => {
-               // 多个组
-               let adset_id = adsetState.id
-                 ? adsetState.id
-                 : await createAdset(campagin_id, i);
-               await Promise.all(
-                 ads.map(async ({ video_id, image_url, name }) => {
-                   const creative_id = await handleCreateCreativeData({
-                     ...adsCreativeState,
-                     video_id,
-                     image_url
-                   });
-                   const ads_id = await createAds(adset_id, creative_id, name);
-                   if (ads_id) {
-                     message.success("创建广告成功");
-                   }
-                 })
-               );
-             })
-           );
-         })
-       );
+        await Promise.all(
+          campaign.map(async ({ adset }, j) => {
+            // 多个广告系列处理
+            let campagin_id = campaignState.id
+              ? campaignState.id
+              : await createCampaign(j);
+            await Promise.all(
+              adset.map(async ({ ads }, i) => {
+                // 多个组
+                let adset_id = adsetState.id
+                  ? adsetState.id
+                  : await createAdset(campagin_id, i);
+                await Promise.all(
+                  ads.map(async ({ video_id, image_url, name }) => {
+                    const creative_id = await handleCreateCreativeData({
+                      ...adsCreativeState,
+                      video_id,
+                      image_url
+                    });
+                    const ads_id = await createAds(adset_id, creative_id, name);
+                    if (ads_id) {
+                      message.success("创建广告成功");
+                    }
+                  })
+                );
+              })
+            );
+          })
+        );
         setLoading(false);
         message.success("创建广告完成");
         // 成功清除
@@ -202,7 +202,7 @@ const createBtn = React.memo(
         setLoading(false);
       }
     }
-    
+
     // 处理批量图片广告
     async function batchImageMore() {
       let { campaign_num, adset_num, ads_num } = adsCreativeState;
@@ -216,38 +216,34 @@ const createBtn = React.memo(
       // 切割数组
       try {
         await Promise.all(
-            campaign.map(async ({ adset }, j) => {
-              // 多个广告系列处理
-              let campagin_id = campaignState.id
-                ? campaignState.id
-                : await createCampaign(j);
-              await Promise.all(
-                adset.map(async ({ ads }, i) => {
-                  // 多个组
-                  let adset_id = adsetState.id
-                    ? adsetState.id
-                    : await createAdset(campagin_id, i);
-                  await Promise.all(
-                    ads.map(async ({ hash, name }) => {
-                      const creative_id = await handleCreateCreativeData({
-                        ...adsCreativeState,
-                        format: "photo_data",
-                        image_hash: hash
-                      });
-                      const ads_id = await createAds(
-                        adset_id,
-                        creative_id,
-                        name
-                      );
-                      if (ads_id) {
-                        message.success("创建广告成功");
-                      }
-                    })
-                  );
-                })
-              );
-            })
-          );
+          campaign.map(async ({ adset }, j) => {
+            // 多个广告系列处理
+            let campagin_id = campaignState.id
+              ? campaignState.id
+              : await createCampaign(j);
+            await Promise.all(
+              adset.map(async ({ ads }, i) => {
+                // 多个组
+                let adset_id = adsetState.id
+                  ? adsetState.id
+                  : await createAdset(campagin_id, i);
+                await Promise.all(
+                  ads.map(async ({ hash, name }) => {
+                    const creative_id = await handleCreateCreativeData({
+                      ...adsCreativeState,
+                      format: "photo_data",
+                      image_hash: hash
+                    });
+                    const ads_id = await createAds(adset_id, creative_id, name);
+                    if (ads_id) {
+                      message.success("创建广告成功");
+                    }
+                  })
+                );
+              })
+            );
+          })
+        );
         setLoading(false);
         message.success("创建广告完成");
         // 成功清除
@@ -260,6 +256,7 @@ const createBtn = React.memo(
     }
 
     function checkState() {
+      console.log(adsCreativeState);
       if (!adsCreativeState.page_id) {
         message.warning("请选择主页");
         return false;
@@ -277,14 +274,14 @@ const createBtn = React.memo(
       if (checkState()) {
         setLoading(true);
         let format = adsCreativeState.format;
-        // 进入批量操作
-        if (format.indexOf("batch_video_data") !== -1) {
+        // 进入批量操作 其中动态创意没有format
+        if (format && format.indexOf("batch_video_data") !== -1) {
           if (!video_ids.length) return message.warning("请先上传视频");
           return batchVideoMore();
         }
-        if (format.indexOf("batch_image_data") !== -1) {
+        if (format && format.indexOf("batch_image_data") !== -1) {
           if (!images.length) return message.warning("请先选择图片");
-          return batchImageMore()
+          return batchImageMore();
         }
 
         // 正常创建 -> 跳过等待创建时间

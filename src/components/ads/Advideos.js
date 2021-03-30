@@ -198,7 +198,7 @@ const Advideos = React.memo(
           setVisible(false);
         }}
       >
-        <div className={style.image_container}>
+        <div className={style.image_container_scroll}>
           <div className={style.image_content}>
             {!loading && options.length ? (
               <MultiplePicture

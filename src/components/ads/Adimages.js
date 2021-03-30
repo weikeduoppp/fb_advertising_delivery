@@ -226,10 +226,10 @@ const Adimages = React.memo(
           // 取消
           setVisible(false);
           // 移除监听
-          removeShiftKeydown()
+          removeShiftKeydown();
         }}
       >
-        <div className={style.image_container}>
+        <div className={style.image_container_scroll}>
           <div className={style.image_content}>
             {!loading && options.length ? (
               <MultiplePicture

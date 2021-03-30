@@ -4,13 +4,13 @@ export const initOptions = {
   autoLogAppEvents: true,
   xfbml: true,
   // 版本更新频繁 根据fb发布时间及时更新
-  version: "v7.0"
+  version: "v10.0"
 };
 
 // ead_net appid, 密钥
 export const client_id = "2327900167245519";
 export const client_secret = "0bf41f7783541275b9ed05f4ca51fdd7";
-export const version = "v7.0";
+export const version = "v10.0";
 
 // 域名
 // export const host = process.env.NODE_ENV === "production" ? 'https://fb.yewq.top' : ''

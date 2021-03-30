@@ -29,7 +29,6 @@ export default memo(
   }) => {
     const [Cost, setCost] = useState(bid_amount || 0);
     const [strategy, setStrategy] = useState("COST_CAP");
-    console.log(campaign_daily_budget);
     return (
       <>
         <div className={style.targeting_con}>

@@ -24,9 +24,9 @@ try {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       bufferMaxEntries: 0 /* B */,
-      autoReconnect: true /* C, default is true, you can ignore it */,
+      // autoReconnect: true /* C, default is true, you can ignore it */,
       // 不要停止尝试重新连接
-      reconnectTries: Number.MAX_VALUE
+      // reconnectTries: Number.MAX_VALUE
     }
   );
   const db = mongoose.connection;
